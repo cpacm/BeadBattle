@@ -54,12 +54,6 @@ public class WelcomeView extends LineBaseView {
 
     public void initBitmap(){
         myPaint = new Paint();
-        myPaint.setColor(Color.BLACK);
-       // myPaint.setStyle(Paint.Style.FILL_AND_STROKE);
-        myPaint.setStyle(Paint.Style.STROKE);
-        myPaint.setStrokeWidth(20.f);
-        myPaint.setStrokeCap(Paint.Cap.ROUND);
-        myPaint.setAntiAlias(true);
         backGround = BitmapFactory.decodeResource(getResources(), R.drawable.background);
         Log.d("TEST","pic: " + backGround.getHeight()+ " "+backGround.getWidth() );
         rx = (float) (ConstantUtil.ScreenWidth/(backGround.getWidth()*1.0));
