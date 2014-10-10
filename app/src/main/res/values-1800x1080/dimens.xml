@@ -1,0 +1,4 @@
+<resources>
+    <dimen name="bead_front_height">288dp</dimen>
+    <dimen name="bead_fragment_height">432dp</dimen>
+</resources>

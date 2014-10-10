@@ -14,10 +14,18 @@ public class BlackBead extends Bead {
 
     public BlackBead(View view) {
         super(view);
+        setBeadType(type);
+    }
+
+    public BlackBead(View view, float locX, float locY, int indexX, int indexY) {
+        super(view, locX, locY, indexX, indexY);
+        setBeadType(type);
     }
 
     @Override
     protected void initBitmap() {
+        super.initBitmap();
         bitmap = BitmapFactory.decodeResource(view.getResources(), R.drawable.bead5);
     }
+
 }

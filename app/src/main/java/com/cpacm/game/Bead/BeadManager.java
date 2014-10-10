@@ -19,14 +19,14 @@ public class BeadManager {
         this.view = view;
     }
 
-    public Bead BeadType(){
+    public Bead getBeadType(float locX,float locY,int indexX,int indexY){
         setRandomType();
         switch(type){
-            case RED:return new RedBead(view);
-            case GREEN:return new GreenBead(view);
-            case YELLOW:return new YellowBead(view);
-            case BLACK:return new BlackBead(view);
-            case PINK:return new PinkBead(view);
+            case RED:return new RedBead(view,locX,locY,indexX,indexY);
+            case GREEN:return new GreenBead(view,locX,locY,indexX,indexY);
+            case YELLOW:return new YellowBead(view,locX,locY,indexX,indexY);
+            case BLACK:return new BlackBead(view,locX,locY,indexX,indexY);
+            case PINK:return new PinkBead(view,locX,locY,indexX,indexY);
         }
         return null;
     }

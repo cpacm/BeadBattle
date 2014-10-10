@@ -1,9 +1,20 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.cpacm.game.beadbattle.BeadActivity">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/bead_front_height"
+        android:text="@string/hello_world"/>
+
+    <fragment android:name="com.cpacm.game.Bead.BeadFragment"
+        android:id="@+id/beadgroup"
+        android:layout_weight="2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bead_fragment_height"
+        tools:layout="@layout/bead_fragment" />
 
 
-
-</RelativeLayout>
+</LinearLayout>

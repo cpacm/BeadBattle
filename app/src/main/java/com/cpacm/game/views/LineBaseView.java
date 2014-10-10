@@ -77,6 +77,7 @@ public abstract class LineBaseView extends SurfaceView implements SurfaceHolder.
         }
         else if(motionEvent.getAction() == MotionEvent.ACTION_UP){
             dpList.setDraw(false);
+
         }
         return true;
     }
