@@ -104,4 +104,20 @@ public abstract class Bead implements IBead{
     public int getIndexY() {
         return indexY;
     }
+
+    public void setLocY(float locY) {
+        this.locY = locY;
+    }
+
+    public void setLocX(float locX) {
+        this.locX = locX;
+    }
+
+    public void setIndexY(int indexY) {
+        this.indexY = indexY;
+    }
+
+    public void setIndexX(int indexX) {
+        this.indexX = indexX;
+    }
 }

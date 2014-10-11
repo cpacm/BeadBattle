@@ -1,7 +1,12 @@
 package com.cpacm.game.Bead;
 
 import android.graphics.Canvas;
+import android.util.Log;
 import android.view.View;
+
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * Created by cpacm on 2014/10/10.
@@ -17,6 +22,7 @@ public class BeadArray {
     private float orgX = ADVANCE,orgY = ADVANCE;
     private int indexX,indexY;
     private BeadControl beadControl;
+    private List<Bead> beadList;
 
     public BeadArray(View view){
         this.view = view;
@@ -69,10 +75,31 @@ public class BeadArray {
     }
 
     public void Clear(){
+        beadList = beadControl.getList();
+        if(beadList.size()>1){
+            ChangeArray();
+        }
         for(int i=0;i<COUNT;i++){
             for(int j=0;j<COUNT;j++){
                 beadControl.Clear(b[i][j]);
             }
+        }
+        beadControl.allClear();
+    }
+
+    /**
+    *消除已经选择的珠子
+    **/
+    public void ChangeArray(){
+        for(int i=0;i<beadList.size();i++){
+            int kx = beadList.get(i).getIndexX();
+            int ky = beadList.get(i).getIndexY();
+            for(int j=ky;j>0;j--) {
+                b[kx][j-1].setIndexY(j);
+                b[kx][j-1].setLocY(getLocY(j));
+                b[kx][j] = b[kx][j-1];
+            }
+            b[kx][0] = beadManager.getBeadType(getLocX(kx),getLocY(0),kx,0);
         }
     }
 

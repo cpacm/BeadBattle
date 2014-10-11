@@ -132,7 +132,6 @@ public class BeadGroupView extends SurfaceView implements SurfaceHolder.Callback
             }
             else if(motionEvent.getAction() == MotionEvent.ACTION_UP){
                 beadArray.Clear();
-                Log.d("TEST","clear");
             }
             return true;
         }

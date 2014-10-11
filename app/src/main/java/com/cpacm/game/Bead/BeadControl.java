@@ -1,14 +1,11 @@
 package com.cpacm.game.Bead;
 
 import android.graphics.Canvas;
-import android.util.Log;
-import android.view.View;
 
 import com.cpacm.game.util.ConstantUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentNavigableMap;
 
 /**
  * Created by cpacm on 2014/10/10.
@@ -41,15 +38,15 @@ public class BeadControl {
             bead.setTouch(false);
         }
     }
-    public void setTouch(Bead bead,boolean isTouch){
-            bead.setTouch(isTouch);
-    }
 
     public void Clear(Bead bead){
         bead.setTouch(false);
         bead.setSelected(false);
-        lastBead = null;
+    }
 
+    public void allClear(){
+        lastBead = null;
+        beadList.clear();
     }
 
     public void setSelected(Bead bead){
@@ -61,11 +58,20 @@ public class BeadControl {
     }
 
     public boolean Sudoku(Bead bead){
-        if((bead.getIndexX()<=lastBead.getIndexX()+1&&bead.getIndexY()>=lastBead.getIndexY()-1)&&(bead.getIndexX()<=lastBead.getIndexX()+1||bead.getIndexY()>=lastBead.getIndexY()-1)){
-            Log.d("TEST","lx:"+lastBead.getIndexX()+" ly:"+lastBead.getIndexY()+"x:"+bead.getIndexX()+" y:"+bead.getIndexY());
+        if((bead.getIndexX()<=lastBead.getIndexX()+1&&bead.getIndexY()>=lastBead.getIndexY()-1)&&(bead.getIndexX()>=lastBead.getIndexX()-1&&bead.getIndexY()<=lastBead.getIndexY()+1)){
             return true;
         }
         return false;
+    }
+
+    public void ChangeBead(Bead b1,Bead b2){
+        b1.setIndex(b2.getIndexX(),b2.getIndexY());
+        b1.setLocation(b2.getLocX(),b2.getLocY());
+
+    }
+
+    public List<Bead> getList(){
+        return beadList;
     }
 
 
