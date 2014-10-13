@@ -14,9 +14,12 @@ public class BeadControl {
 
     private Bead lastBead = null;
     private List<Bead> beadList = new ArrayList<Bead>();
+    private Integer c[][] = new Integer[ConstantUtil.COUNT][ConstantUtil.COUNT];
 
     public BeadControl() {
+        initC();
     }
+
 
     public void drawBeat(Bead bead,Canvas canvas){
         bead.drawBeat(canvas);
@@ -28,6 +31,9 @@ public class BeadControl {
             if(lastBead == null && !bead.isSelected()){
                 beadList.add(bead);
                 lastBead = bead;
+                for(int j = bead.getIndexY();j>=0;j--){
+                    c[bead.getIndexX()][j]++;
+                }
                 bead.setSelected(true);
 
             }else{
@@ -47,13 +53,25 @@ public class BeadControl {
     public void allClear(){
         lastBead = null;
         beadList.clear();
+        initC();
+    }
+
+    public void initC(){
+        for(int i=0;i<ConstantUtil.COUNT;i++){
+            for(int j=0;j<ConstantUtil.COUNT;j++){
+                c[i][j] = 0;
+            }
+        }
     }
 
     public void setSelected(Bead bead){
         if (bead.getBeadType() == lastBead.getBeadType() && Sudoku(bead) && !bead.isSelected()) {
-                beadList.add(bead);
-                lastBead = bead;
-                bead.setSelected(true);
+            beadList.add(bead);
+            lastBead = bead;
+            for(int j = bead.getIndexY();j>=0;j--){
+                c[bead.getIndexX()][j]++;
+            }
+            bead.setSelected(true);
         }
     }
 
@@ -64,15 +82,17 @@ public class BeadControl {
         return false;
     }
 
-    public void ChangeBead(Bead b1,Bead b2){
-        b1.setIndex(b2.getIndexX(),b2.getIndexY());
-        b1.setLocation(b2.getLocX(),b2.getLocY());
-
+    public void BeadDrop(Bead bead,int offset){
+        bead.setDrop(true);
+        bead.setIndexY(bead.getIndexY()+offset);
+        bead.setLocY(bead.getLocY()+ConstantUtil.SIZE*offset);
     }
 
     public List<Bead> getList(){
         return beadList;
     }
 
-
+    public Integer[][] getC() {
+        return c;
+    }
 }

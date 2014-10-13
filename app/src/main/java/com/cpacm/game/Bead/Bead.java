@@ -3,11 +3,10 @@ package com.cpacm.game.Bead;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.util.Log;
+import android.graphics.Rect;
 import android.view.View;
 
 import com.cpacm.game.IEntity.IBead;
-import com.cpacm.game.util.ConstantUtil;
 
 /**
  * Created by cpacm on 2014/10/9.
@@ -18,10 +17,15 @@ public abstract class Bead implements IBead{
     protected Bitmap bitmap;
     protected View view;
     protected BeadType beadType;
-    protected int size;
-    protected boolean isTouch = false;
-    protected boolean isSelected = false;
+    protected boolean isTouch = false;//是否触碰
+    protected boolean isSelected = false;//是否选择
+    protected boolean isDrop = false;//是否掉落
+    protected boolean isDisplay = false;//是否显示
+    protected boolean isDisappear = false;//是否消失
     protected Paint myPaint;
+
+    protected  int process;
+    protected Rect src,dst;
 
     public Bead (View view){
         this.view = view;
@@ -38,10 +42,46 @@ public abstract class Bead implements IBead{
     }
 
     protected void initBead(){
+        process = 0;
     }
 
     protected void initBitmap(){
+        src = new Rect();
+        dst = new Rect();
         myPaint = new Paint();
+    }
+
+    public void drawBeat(Canvas canvas){
+
+        if(!isDisplay()){
+            canvas.save();
+            myPaint.setAlpha(90);
+            canvas.drawBitmap(bitmap, locX, locY, myPaint);
+            canvas.restore();
+            setDisplay(true);
+        }
+        else if(isDisappear()){
+            canvas.save();
+            myPaint.setAlpha(80);
+            canvas.drawBitmap(bitmap, locX, locY, myPaint);
+            canvas.restore();
+        }
+        else if(isDrop()){
+            canvas.save();
+            myPaint.setAlpha(120);
+            canvas.drawBitmap(bitmap, locX, locY, myPaint);
+            canvas.restore();
+        }
+        else{
+            if(isSelected){
+                myPaint.setAlpha(40);
+                canvas.drawBitmap(bitmap, locX, locY, myPaint);
+            }
+            else {
+                myPaint.setAlpha(225);
+                canvas.drawBitmap(bitmap, locX, locY, myPaint);
+            }
+        }
     }
 
     public void setLocation(float locX,float locY){
@@ -52,17 +92,6 @@ public abstract class Bead implements IBead{
     public void setIndex(int indexX,int indexY){
         this.indexX = indexX;
         this.indexY = indexY;
-    }
-
-    public void drawBeat(Canvas canvas){
-        if(isSelected){
-            myPaint.setAlpha(100);
-            //canvas.drawBitmap(bitmap, locX, locY, myPaint);
-        }
-        else {
-            myPaint.setAlpha(225);
-            canvas.drawBitmap(bitmap, locX, locY, myPaint);
-        }
     }
 
     public boolean isTouch() {
@@ -119,5 +148,37 @@ public abstract class Bead implements IBead{
 
     public void setIndexX(int indexX) {
         this.indexX = indexX;
+    }
+
+    public boolean isDisappear() {
+        return isDisappear;
+    }
+
+    public void setDisappear(boolean isDisappear) {
+        this.isDisappear = isDisappear;
+    }
+
+    public boolean isDisplay() {
+        return isDisplay;
+    }
+
+    public void setDisplay(boolean isDisplay) {
+        this.isDisplay = isDisplay;
+    }
+
+    public boolean isDrop() {
+        return isDrop;
+    }
+
+    public void setDrop(boolean isDrop) {
+        this.isDrop = isDrop;
+    }
+
+    public int getProcess() {
+        return process;
+    }
+
+    public void setProcess(int process) {
+        this.process = process;
     }
 }

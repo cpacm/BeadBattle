@@ -1,28 +1,26 @@
 package com.cpacm.game.Bead;
 
 import android.graphics.Canvas;
-import android.util.Log;
 import android.view.View;
 
-import java.util.Collections;
-import java.util.Comparator;
+import com.cpacm.game.util.ConstantUtil;
+
 import java.util.List;
 
 /**
  * Created by cpacm on 2014/10/10.
  */
 public class BeadArray {
-    private final static int COUNT = 6;
     private final static int ADVANCE = 0;
 
-    private Bead b[][] = new Bead [COUNT][COUNT];
+    private Bead b[][] = new Bead [ConstantUtil.COUNT][ConstantUtil.COUNT];
     private View view;
     private BeadManager beadManager;
     private int size = ADVANCE;
     private float orgX = ADVANCE,orgY = ADVANCE;
-    private int indexX,indexY;
     private BeadControl beadControl;
     private List<Bead> beadList;
+    private boolean ChangeSwitch = false;
 
     public BeadArray(View view){
         this.view = view;
@@ -41,73 +39,34 @@ public class BeadArray {
     }
 
     public void initArray(){
-        for(int i=0;i<COUNT;i++){
-            for(int j=0;j<COUNT;j++){
+        for(int i=0;i<ConstantUtil.COUNT;i++){
+            for(int j=0;j<ConstantUtil.COUNT;j++){
                 b[i][j] = beadManager.getBeadType(getLocX(i),getLocY(j),i,j);
             }
         }
     }
 
     public void DrawArray(Canvas canvas){
-        for(int i=0;i<COUNT;i++){
-            for(int j=0;j<COUNT;j++){
+        for(int i=0;i<ConstantUtil.COUNT;i++){
+            for(int j=0;j<ConstantUtil.COUNT;j++){
                 beadControl.drawBeat(b[i][j],canvas);
             }
         }
     }
 
     public void Update(float x,float y){
-        setIndexX(x);
-        setIndexY(y);
-        for(int i=0;i<COUNT;i++){
-            for(int j=0;j<COUNT;j++){
+        for(int i=0;i<ConstantUtil.COUNT;i++){
+            for(int j=0;j<ConstantUtil.COUNT;j++){
                 beadControl.setTouch(b[i][j], x, y);
             }
         }
     }
 
-    public void setIndexX(float x) {
-        indexX = (int)((x-orgX)/size);
-    }
-
-    public void setIndexY(float y) {
-        indexY = (int)((y-orgY)/size);
-    }
-
-    public void Clear(){
-        beadList = beadControl.getList();
-        if(beadList.size()>1){
-            ChangeArray();
-        }
-        for(int i=0;i<COUNT;i++){
-            for(int j=0;j<COUNT;j++){
-                beadControl.Clear(b[i][j]);
-            }
-        }
-        beadControl.allClear();
-    }
-
-    /**
-    *消除已经选择的珠子
-    **/
-    public void ChangeArray(){
-        for(int i=0;i<beadList.size();i++){
-            int kx = beadList.get(i).getIndexX();
-            int ky = beadList.get(i).getIndexY();
-            for(int j=ky;j>0;j--) {
-                b[kx][j-1].setIndexY(j);
-                b[kx][j-1].setLocY(getLocY(j));
-                b[kx][j] = b[kx][j-1];
-            }
-            b[kx][0] = beadManager.getBeadType(getLocX(kx),getLocY(0),kx,0);
-        }
-    }
-
-    private float getLocX(int indexX){
+    public float getLocX(int indexX){
         return indexX*size+orgX;
     }
 
-    private float getLocY(int indexY){
+    public float getLocY(int indexY){
         return indexY*size+orgY;
     }
 
@@ -120,7 +79,30 @@ public class BeadArray {
         this.size = size;
     }
 
-    public static int getCount() {
-        return COUNT;
+    public BeadControl getBeadControl() {
+        return beadControl;
+    }
+
+    public boolean isChangeSwitch() {
+        return ChangeSwitch;
+    }
+
+    public void setChangeSwitch(boolean changeSwitch) {
+        beadList = beadControl.getList();
+        if(beadList.size()>1){
+            ChangeSwitch = changeSwitch;
+        }
+        else if(beadList.size()<=1){
+            beadControl.Clear(beadList.get(0));
+            beadControl.allClear();
+        }
+    }
+
+    public BeadManager getBeadManager() {
+        return beadManager;
+    }
+
+    public Bead[][] getB() {
+        return b;
     }
 }

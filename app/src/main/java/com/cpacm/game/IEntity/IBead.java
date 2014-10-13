@@ -5,4 +5,5 @@ package com.cpacm.game.IEntity;
  */
 public interface IBead {
 
+
 }

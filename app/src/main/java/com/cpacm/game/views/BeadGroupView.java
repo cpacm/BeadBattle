@@ -15,6 +15,7 @@ import android.view.View;
 
 import com.cpacm.game.Bead.BeadArray;
 import com.cpacm.game.beadbattle.R;
+import com.cpacm.game.thread.BeadGroupThread;
 import com.cpacm.game.util.ConstantUtil;
 
 /**
@@ -27,7 +28,7 @@ public class BeadGroupView extends SurfaceView implements SurfaceHolder.Callback
     private Canvas canvas;
     private Paint myPaint;
     private float rx,ry;
-    private BeatGroupThread bgThread;
+    private BeadGroupThread bgThread;
     private BeadArray beadArray;
 
     public BeadGroupView(Context context) {
@@ -53,7 +54,7 @@ public class BeadGroupView extends SurfaceView implements SurfaceHolder.Callback
         myPaint = new Paint();
         beadPic = BitmapFactory.decodeResource(getResources(), R.drawable.bead1);
         Log.d("TEST", "pic: " + beadPic.getHeight() + " " + beadPic.getWidth());
-        ry = rx = (float) (ConstantUtil.ScreenWidth/(beadPic.getWidth()*6.0));
+        ry = rx = (float) (ConstantUtil.ScreenWidth/(beadPic.getWidth()*ConstantUtil.COUNT*1.0));
         Log.d("TEST","rx+ry: " +rx+ " "+ry);
         ConstantUtil.SIZE = beadPic.getWidth();
         beadArray = new BeadArray(this,0,0,ConstantUtil.SIZE);
@@ -78,7 +79,7 @@ public class BeadGroupView extends SurfaceView implements SurfaceHolder.Callback
 
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
-        bgThread = new BeatGroupThread();
+        bgThread = new BeadGroupThread(this);
         bgThread.start();
     }
 
@@ -92,48 +93,27 @@ public class BeadGroupView extends SurfaceView implements SurfaceHolder.Callback
         bgThread.setRun(false);
     }
 
-    private class BeatGroupThread extends Thread{
-
-        private boolean isRun = false;
-
-        private BeatGroupThread() {
-            isRun = true;
-        }
-        @Override
-        public void run() {
-            while(isRun){
-                OnDraw();
-                try {
-                    sleep(25);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            super.run();
-        }
-
-        public boolean isRun() {
-            return isRun;
-        }
-
-        public void setRun(boolean isRun) {
-            this.isRun = isRun;
-        }
-    }
-
     private class OnTouchListenerBead implements OnTouchListener {
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
             if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
-                beadArray.Update(motionEvent.getX()/rx,motionEvent.getY()/ry);
+                if(!beadArray.isChangeSwitch()) beadArray.Update(motionEvent.getX()/rx,motionEvent.getY()/ry);
             }
             else if(motionEvent.getAction() == MotionEvent.ACTION_MOVE){
-                beadArray.Update(motionEvent.getX()/rx,motionEvent.getY()/ry);
+                if(!beadArray.isChangeSwitch()) beadArray.Update(motionEvent.getX()/rx,motionEvent.getY()/ry);
             }
             else if(motionEvent.getAction() == MotionEvent.ACTION_UP){
-                beadArray.Clear();
+                beadArray.setChangeSwitch(true);
             }
             return true;
         }
+    }
+
+    public BeadArray getBeadArray() {
+        return beadArray;
+    }
+
+    public void setBeadArray(BeadArray beadArray) {
+        this.beadArray = beadArray;
     }
 }
