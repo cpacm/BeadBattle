@@ -14,7 +14,7 @@ public class ConstantUtil {
     public static int SIZE = 150;
 
     //珠子刷新的频率
-    public static final int RATE = 25;
+    public static final int RATE = 20;
 
     //手机屏幕的各个参数
     public static int ScreenWidth;

@@ -13,11 +13,11 @@ import java.util.List;
 public class BeadStatus{
 
     //掉落参数，单位为ms
-    private final static int DROP_PARAM = 50;
+    private final static int DROP_PARAM = 200;
     //出现参数
-    private final static int DISPLAY_PARAM = 50;
+    private final static int DISPLAY_PARAM = 1000;
     //消失参数
-    private final static int DISAPPEAR_PARAM = 50;
+    private final static int DISAPPEAR_PARAM = 100;
 
     private BeadArray beadArray;
     private BeadControl beadControl;
@@ -26,6 +26,8 @@ public class BeadStatus{
     private Integer c[][];
     private int status;
     private int process;
+
+    private long begin,end;
 
     public BeadStatus(BeadArray beadArray) {
         this.beadArray = beadArray;
@@ -37,8 +39,9 @@ public class BeadStatus{
         process = 0;
     }
 
-    public void StatusChange(){
+    public void StatusChange(Thread thread){
         if(beadArray.isChangeSwitch()){
+
             switch(status){
                 //准备状态
                 case 0:{
@@ -47,17 +50,18 @@ public class BeadStatus{
                     }
                     status = 1;
                     process = 0;
-                    Log.d("TEST", "status:prepare");
+                    //Log.d("TEST", "status:prepare");
                     break;
                 }
                 case 1:{
                     //珠子消失状态的动画
-                    if(process <= (DISAPPEAR_PARAM/ ConstantUtil.RATE)){
-                        process++;
-                        Log.d("TEST", "status:display...");
+                    try {
+                        thread.sleep(DISAPPEAR_PARAM);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
                     //消失动画结束，重新初始化值，并使珠子进入列表更新状态（下落状态）
-                    else{
+                    finally {
                         for (int i = 0; i < beadList.size(); i++) {
                             beadList.get(i).setDisappear(false);
                         }
@@ -71,18 +75,19 @@ public class BeadStatus{
                         }
                         process = 0;
                         status = 2;
-                        Log.d("TEST", "status:drop");
+                        //Log.d("TEST", "status:drop");
                     }
                     break;
                 }
                 //珠子下落状态的动画
                 case 2:{
-                    if(process <= (DROP_PARAM/ ConstantUtil.RATE)){
-                        Log.d("TEST", "status:drop...");
-                        process++;
+                    try {
+                        thread.sleep(DROP_PARAM);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
                     //下落动画结束，重新初始化值，并使珠子进入生成状态
-                    else{
+                    finally {
                         for(int i=0;i<ConstantUtil.COUNT;i++){
                             for(int j = ConstantUtil.COUNT-1;j>=0;j--){
                                 if(b[i][j].isDrop()) {
@@ -92,7 +97,7 @@ public class BeadStatus{
                         }
                         process = 0;
                         status = 3;
-                        Log.d("TEST", "status:display");
+                        //Log.d("TEST", "status:display");
                     }
                     break;
                 }
@@ -107,11 +112,14 @@ public class BeadStatus{
                     status = 0;
                     beadArray.setChangeSwitch(false);
                     beadControl.allClear();
-                    Log.d("TEST", "status:close");
+                    //Log.d("TEST", "status:close");
                     break;
                 }
             }
         }
     }
 
+    public BeadArray getBeadArray() {
+        return beadArray;
+    }
 }

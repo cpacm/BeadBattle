@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.View;
 
 import com.cpacm.game.IEntity.IBead;
@@ -52,7 +53,6 @@ public abstract class Bead implements IBead{
     }
 
     public void drawBeat(Canvas canvas){
-
         if(!isDisplay()){
             canvas.save();
             myPaint.setAlpha(90);
@@ -65,12 +65,14 @@ public abstract class Bead implements IBead{
             myPaint.setAlpha(80);
             canvas.drawBitmap(bitmap, locX, locY, myPaint);
             canvas.restore();
+            //Log.d("TEST","drawDisappear");
         }
         else if(isDrop()){
             canvas.save();
             myPaint.setAlpha(120);
             canvas.drawBitmap(bitmap, locX, locY, myPaint);
             canvas.restore();
+            //Log.d("TEST","drawDrop");
         }
         else{
             if(isSelected){
