@@ -172,7 +172,6 @@ public class BeadArray {
     public void setOrgLoc(float x,float y){
         this.orgX = x;
         this.orgY = y;
-        //Log.d("TEST","x:"+x+",y:"+y);
     }
 
     public void setSize(int size) {

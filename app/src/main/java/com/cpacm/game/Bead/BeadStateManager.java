@@ -32,7 +32,7 @@ public class BeadStateManager {
     public BeadStateManager(Bead bead,BeadType type) {
         this.bead = bead;
         bead.setType(type);
-        bead.setBitmap(BitmapUtil.getBeadBitmap(type));//获取珠子的图片
+        bead.setBitmap(BitmapUtil.getInstance().getBeadBitmap(type));//获取珠子的图片
         setCurrentStatus(Bead_Appear.getInstance());
         setPreviousStatus(Bead_Normal.getInstance());
         setGlobalStatus(null);
@@ -68,9 +68,9 @@ public class BeadStateManager {
     }
 
     public void setRandomBitmap(){
-        BeadType type = BitmapUtil.setRandomType();
+        BeadType type = BitmapUtil.getInstance().setRandomType();
         bead.setType(type);
-        bead.setBitmap(BitmapUtil.getBeadBitmap(type));//获取珠子的图片
+        bead.setBitmap(BitmapUtil.getInstance().getBeadBitmap(type));//获取珠子的图片
     }
 
 

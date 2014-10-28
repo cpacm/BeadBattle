@@ -26,7 +26,7 @@ public class Bead_Disappear implements IState<Bead> {
     private Rect src,dst;
 
     private Bead_Disappear(){
-        bitmap = BitmapUtil.getStatusBitmap(ConstantUtil.DISAPPEAR);
+        bitmap = BitmapUtil.getInstance().getStatusBitmap(ConstantUtil.DISAPPEAR);
         src = new Rect();
         dst = new Rect();
     }

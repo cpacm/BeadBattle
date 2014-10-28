@@ -29,7 +29,6 @@ public class Bead_Drop implements IState<Bead> {
         bead.setX(bead.getX()+bead.getDrop_offset());
         bead.setId(bead.getX()*ConstantUtil.COUNT+bead.getY() );
         bead.setDrop_offset(0);
-        //BeadManager.getInstance().RegisterEntity(bead);
     }
 
     @Override
@@ -57,7 +56,6 @@ public class Bead_Drop implements IState<Bead> {
 
     @Override
     public boolean OnMessage(Bead bead, Telegram msg) {
-
         return false;
     }
 }

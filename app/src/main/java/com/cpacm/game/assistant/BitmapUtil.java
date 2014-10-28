@@ -15,22 +15,48 @@ import java.util.Random;
  */
 public class BitmapUtil {
     private static final Random RNG = new Random();
+    private static BitmapUtil bitmapUtil = new BitmapUtil();
 
-    public static Bitmap getBeadBitmap(BeadType type){
+    private Bitmap bitmap_RED;
+    private Bitmap bitmap_BLACK;
+    private Bitmap bitmap_GREEN;
+    private Bitmap bitmap_YELLOW;
+    private Bitmap bitmap_PINK;
+    private Bitmap bitmap_DISAPPEAR;
+
+    private BitmapUtil(){
+        initBitmapUtil();
+    }
+
+    public static BitmapUtil getInstance(){
+        return bitmapUtil;
+    }
+
+    private void initBitmapUtil(){
+        bitmap_RED = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.bead1);
+        bitmap_BLACK = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.bead2);
+        bitmap_GREEN = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.bead3);
+        bitmap_YELLOW = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.bead4);
+        bitmap_PINK = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.bead5);
+        bitmap_DISAPPEAR = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.disappear);
+    }
+
+    public Bitmap getBeadBitmap(BeadType type){
         Bitmap bitmap;
         switch(type){
-            case RED: bitmap = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.bead1);break;
-            case BLACK:bitmap = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.bead2);break;
-            case GREEN:bitmap = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.bead3);break;
-            case YELLOW:bitmap = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.bead4);break;
-            case PINK:bitmap = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.bead5);break;
-            default:bitmap = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.bead1);break;
+            case RED: bitmap = bitmap_RED;break;
+            case BLACK:bitmap = bitmap_BLACK;break;
+            case GREEN:bitmap = bitmap_GREEN;break;
+            case YELLOW:bitmap = bitmap_YELLOW;break;
+            case PINK:bitmap = bitmap_PINK;break;
+
+            default:bitmap = bitmap_RED;break;
         }
         return bitmap;
     }
 
     //随机的属性珠子
-    public static BeadType setRandomType(){
+    public BeadType setRandomType(){
         BeadType type = BeadType.RED;
         int roll = RNG.nextInt(5)+1;
         switch (roll){
@@ -44,13 +70,13 @@ public class BitmapUtil {
     }
 
     //获得活动图片
-    public static Bitmap getStatusBitmap(int status){
+    public Bitmap getStatusBitmap(int status){
         Bitmap bitmap;
         switch(status){
             case ConstantUtil.DISAPPEAR:{
-                bitmap = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.disappear);break;
+                bitmap = bitmap_DISAPPEAR;break;
             }
-            default:bitmap = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.disappear);break;
+            default:bitmap = bitmap_DISAPPEAR;break;
         }
         return bitmap;
     }
