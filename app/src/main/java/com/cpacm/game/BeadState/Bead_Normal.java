@@ -5,6 +5,7 @@ import android.graphics.Paint;
 import android.util.Log;
 
 import com.cpacm.game.Bead.Bead;
+import com.cpacm.game.Bead.BeadManager;
 import com.cpacm.game.BeadMessage.Telegram;
 import com.cpacm.game.IEntity.IState;
 import com.cpacm.game.util.ConstantUtil;
@@ -41,16 +42,13 @@ public class Bead_Normal implements IState<Bead> {
 
     @Override
     public boolean OnMessage(Bead bead, Telegram msg) {
-        Log.d("TEST","接受"+msg.getReceiver()+"msg"+msg.getMsg());
         switch(msg.getMsg()){
             case ConstantUtil.SELECTED:{
                 bead.getBeadStateManager().ChangeState(Bead_Selected.getInstance());
                 return true;
             }
             case ConstantUtil.DROPCOUNT:{
-                //bead.setId(bead.getId()+ConstantUtil.COUNT);
-                //bead.setY(bead.getY()+ConstantUtil.COUNT);
-                bead.setOffset(bead.getOffset()+1);
+                bead.setDrop_offset(bead.getDrop_offset()+1);
                 return true;
             }
             case ConstantUtil.DROP:{

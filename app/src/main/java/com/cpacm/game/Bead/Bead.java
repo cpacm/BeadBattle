@@ -22,7 +22,8 @@ public class Bead extends Entity {
     private Bitmap bitmap;
     //动画的偏移量
     private float offset = 0;
-
+    //掉落格数
+    private int drop_offset = 0;
 
     private BeadStateManager beadStateManager;
 
@@ -86,5 +87,13 @@ public class Bead extends Entity {
 
     public BeadType getType() {
         return type;
+    }
+
+    public int getDrop_offset() {
+        return drop_offset;
+    }
+
+    public void setDrop_offset(int drop_offset) {
+        this.drop_offset = drop_offset;
     }
 }

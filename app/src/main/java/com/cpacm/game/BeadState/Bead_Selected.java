@@ -48,6 +48,7 @@ public class Bead_Selected implements IState<Bead> {
 
     @Override
     public boolean OnMessage(Bead bead, Telegram msg) {
+
         return false;
     }
 

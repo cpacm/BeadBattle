@@ -9,6 +9,7 @@ import android.graphics.RectF;
 import android.util.Log;
 
 import com.cpacm.game.Bead.Bead;
+import com.cpacm.game.Bead.BeadManager;
 import com.cpacm.game.BeadMessage.MessageDispatcher;
 import com.cpacm.game.BeadMessage.Telegram;
 import com.cpacm.game.IEntity.IState;
@@ -32,6 +33,7 @@ public class Bead_Disappear implements IState<Bead> {
 
     @Override
     public void Enter(Bead bead) {
+        BeadManager.getInstance().addDisappearCount(1);
         bead.setOffset(0);
     }
 
@@ -53,6 +55,9 @@ public class Bead_Disappear implements IState<Bead> {
     public void Exit(Bead bead) {
         bead.setOffset(0);
         bead.getBeadStateManager().setRandomBitmap();
+        setBeadLocY(bead);
+        setBeadX(bead);
+        BeadManager.getInstance().addDisappearCount(-1);
     }
 
     private void setSrc(int index){
@@ -77,6 +82,14 @@ public class Bead_Disappear implements IState<Bead> {
     //饿汉单例模式
     public static Bead_Disappear getInstance() {
         return bead_disappear;
+    }
+
+    private void setBeadLocY(Bead bead){
+        bead.setLocY(bead.getId()/ConstantUtil.COUNT*ConstantUtil.SIZE+ConstantUtil.OFFSETY);
+    }
+
+    private void setBeadX(Bead bead){
+        bead.setX(bead.getId()/ConstantUtil.COUNT);
     }
 
 }

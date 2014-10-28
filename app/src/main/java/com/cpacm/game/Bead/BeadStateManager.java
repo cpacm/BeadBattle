@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.util.Log;
 
 import com.cpacm.game.BeadState.Bead_Appear;
+import com.cpacm.game.BeadState.Bead_Normal;
 import com.cpacm.game.IEntity.IState;
 import com.cpacm.game.BeadMessage.Telegram;
 import com.cpacm.game.assistant.BitmapUtil;
@@ -23,7 +24,7 @@ public class BeadStateManager {
         this.bead = bead;
         setRandomBitmap();
         setCurrentStatus(Bead_Appear.getInstance());
-        setPreviousStatus(null);
+        setPreviousStatus(Bead_Normal.getInstance());
         setGlobalStatus(null);
         CurrentStatus.Enter(bead);
     }
@@ -33,7 +34,7 @@ public class BeadStateManager {
         bead.setType(type);
         bead.setBitmap(BitmapUtil.getBeadBitmap(type));//获取珠子的图片
         setCurrentStatus(Bead_Appear.getInstance());
-        setPreviousStatus(null);
+        setPreviousStatus(Bead_Normal.getInstance());
         setGlobalStatus(null);
         CurrentStatus.Enter(bead);
     }

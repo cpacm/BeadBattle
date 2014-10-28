@@ -18,6 +18,8 @@ public class BeadManager implements IEntityManager<Bead> {
 
     private BeadManager(){}
 
+    private int disappearCount = 0;
+
     @Override
     public void RegisterEntity(Bead bead) {
         beadMap.put(bead.getId(),bead);
@@ -35,5 +37,16 @@ public class BeadManager implements IEntityManager<Bead> {
 
     public static BeadManager getInstance(){
         return beadManager;
+    }
+
+    public void addDisappearCount(int disappearCount) {
+        this.disappearCount += disappearCount;
+    }
+
+    public boolean isDisappear(){
+        if(disappearCount == 0){
+            return true;
+        }
+        return false;
     }
 }

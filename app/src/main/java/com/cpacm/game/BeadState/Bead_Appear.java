@@ -7,6 +7,7 @@ import android.nfc.Tag;
 import android.util.Log;
 
 import com.cpacm.game.Bead.Bead;
+import com.cpacm.game.Bead.BeadManager;
 import com.cpacm.game.IEntity.IState;
 import com.cpacm.game.BeadMessage.Telegram;
 import com.cpacm.game.util.ConstantUtil;
@@ -27,10 +28,7 @@ public class Bead_Appear implements IState<Bead> {
     @Override
     public void Enter(Bead bead) {
         bead.setOffset(0);
-        setBeadLocY(bead);
-        setBeadX(bead);
         mMatrix = new Matrix();
-
     }
 
     @Override
@@ -61,7 +59,16 @@ public class Bead_Appear implements IState<Bead> {
 
     @Override
     public boolean OnMessage(Bead bead, Telegram msg) {
-
+        switch(msg.getMsg()){
+            case ConstantUtil.DROPCOUNT:{
+                bead.setDrop_offset(bead.getDrop_offset()+1);
+                return true;
+            }
+            case ConstantUtil.DROP:{
+                bead.getBeadStateManager().ChangeState(Bead_Drop.getInstance());
+                return true;
+            }
+        }
         return false;
     }
 
@@ -70,11 +77,4 @@ public class Bead_Appear implements IState<Bead> {
         return bead_Appear;
     }
 
-    private void setBeadLocY(Bead bead){
-        bead.setLocY(bead.getId()/ConstantUtil.COUNT*ConstantUtil.SIZE+ConstantUtil.OFFSETY);
-    }
-
-    private void setBeadX(Bead bead){
-        bead.setX(bead.getId()/ConstantUtil.COUNT);
-    }
 }

@@ -1,14 +1,11 @@
 package com.cpacm.game.Bead;
 
 import android.graphics.Canvas;
-import android.util.Log;
-import android.view.View;
 
 import com.cpacm.game.BeadMessage.MessageDispatcher;
 import com.cpacm.game.BeadState.Bead_Disappear;
 import com.cpacm.game.BeadState.Bead_Normal;
 import com.cpacm.game.BeadState.Bead_Selected;
-import com.cpacm.game.IEntity.Entity;
 import com.cpacm.game.util.ConstantUtil;
 
 import java.util.ArrayList;
@@ -78,9 +75,11 @@ public class BeadArray {
      * @param y
      */
     public void BeadSelected(float x,float y){
-        for(int i = 0;i<ConstantUtil.COUNT;i++){
-            for(int j = 0;j<ConstantUtil.COUNT;j++){
-                setTouch(b[i][j],x,y);
+        if(BeadManager.getInstance().isDisappear()) {
+            for (int i = 0; i < ConstantUtil.COUNT; i++) {
+                for (int j = 0; j < ConstantUtil.COUNT; j++) {
+                    setTouch(b[i][j], x, y);
+                }
             }
         }
     }
@@ -98,7 +97,9 @@ public class BeadArray {
                     a[bead.getY()]++;
                     AddBead(bead);
                     lastBead = bead;
-                    bead.getBeadStateManager().ChangeState(Bead_Selected.getInstance());
+                    if(bead.getBeadStateManager().getCurrentStatus() == Bead_Normal.getInstance()){
+                        bead.getBeadStateManager().ChangeState(Bead_Selected.getInstance());
+                    }
                 }else{
                     setSelected(bead);
                 }
@@ -111,7 +112,9 @@ public class BeadArray {
             a[bead.getY()]++;
             AddBead(bead);
             lastBead = bead;
-            bead.getBeadStateManager().ChangeState(Bead_Selected.getInstance());
+            if(bead.getBeadStateManager().getCurrentStatus() == Bead_Normal.getInstance()){
+                bead.getBeadStateManager().ChangeState(Bead_Selected.getInstance());
+            }
         }
     }
 
@@ -135,7 +138,6 @@ public class BeadArray {
                         MessageDispatcher.getInstance().DispatchMessage(0,id,id-ConstantUtil.COUNT,ConstantUtil.DROPCOUNT);
                         id = id - ConstantUtil.COUNT;
                         if(!dropList.contains(BeadManager.getInstance().GetEntityFromId(id))){
-                            Log.d("TEST","id"+id+"trueId"+BeadManager.getInstance().GetEntityFromId(id).getId());
                             dropList.add(BeadManager.getInstance().GetEntityFromId(id));
                         }
                     }
