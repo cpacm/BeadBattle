@@ -13,7 +13,7 @@ import android.view.SurfaceView;
 import com.cpacm.game.assistant.DragPointer;
 
 /**
- * 线条残影类，要调用onBaseDraw
+ * 线条残影类，要调用onBaseDraw（），和在触摸事件中调用setOnTouch()方法
  * Created by cpacm on 2014/10/8.
  */
 public abstract class LineBaseView extends SurfaceView implements SurfaceHolder.Callback{
@@ -41,7 +41,7 @@ public abstract class LineBaseView extends SurfaceView implements SurfaceHolder.
 
     public void initBaseBitmap(){
         basePaint = new Paint();
-        basePaint.setColor(Color.BLACK);
+        basePaint.setColor(Color.BLUE);
         // myPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         basePaint.setStyle(Paint.Style.STROKE);
         basePaint.setStrokeWidth(20.f);
@@ -49,6 +49,10 @@ public abstract class LineBaseView extends SurfaceView implements SurfaceHolder.
         basePaint.setAntiAlias(true);
     }
 
+    /**
+     * 在父类中调用此方法则会画出线
+     * @param canvas
+     */
     public void OnBaseDraw(Canvas canvas){
         canvas.save();
         //画的内容是z轴的，后画的会覆盖前面画的
@@ -64,9 +68,10 @@ public abstract class LineBaseView extends SurfaceView implements SurfaceHolder.
             }
         }
         canvas.restore();
+
     }
 
-    @Override
+    /*@Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
         if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
             dpList.initPoint(motionEvent.getX(),motionEvent.getY());
@@ -80,5 +85,23 @@ public abstract class LineBaseView extends SurfaceView implements SurfaceHolder.
 
         }
         return true;
+    }*/
+
+    /**
+     * 由于当子类继承触摸事件时，该类继承的触摸事件无法运行，所以要人为设置触摸事件
+     * 在子类中设置触摸事件
+     * @param motionEvent
+     */
+    public void setTouchEvent(MotionEvent motionEvent){
+        if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+            dpList.initPoint(motionEvent.getX(),motionEvent.getY());
+            dpList.setDraw(true);
+        }
+        else if(motionEvent.getAction() == MotionEvent.ACTION_MOVE){
+            dpList.setPoint(motionEvent.getX(),motionEvent.getY());
+        }
+        else if(motionEvent.getAction() == MotionEvent.ACTION_UP){
+            dpList.setDraw(false);
+        }
     }
 }

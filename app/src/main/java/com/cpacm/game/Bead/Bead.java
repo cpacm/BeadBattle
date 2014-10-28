@@ -2,185 +2,89 @@ package com.cpacm.game.Bead;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Rect;
 import android.util.Log;
-import android.view.View;
 
-import com.cpacm.game.IEntity.IBead;
+import com.cpacm.game.IEntity.Entity;
+import com.cpacm.game.BeadMessage.Telegram;
+import com.cpacm.game.util.ConstantUtil;
 
 /**
- * Created by cpacm on 2014/10/9.
+ * Created by cpacm on 2014/10/22.
  */
-public abstract class Bead implements IBead{
-    protected float locX,locY;
-    protected int indexX,indexY;
-    protected Bitmap bitmap;
-    protected View view;
-    protected BeadType beadType;
-    protected boolean isTouch = false;//是否触碰
-    protected boolean isSelected = false;//是否选择
-    protected boolean isDrop = false;//是否掉落
-    protected boolean isDisplay = false;//是否显示
-    protected boolean isDisappear = false;//是否消失
-    protected Paint myPaint;
+public class Bead extends Entity {
 
-    protected  int process;
-    protected Rect src,dst;
+    private static final String TAG = "cpacm";
+    //规定珠子的数量
+    private static final int MAX = ConstantUtil.MAX;
+    //珠子的类型
+    private BeadType type;
+    //珠子的图像资源
+    private Bitmap bitmap;
+    //动画的偏移量
+    private float offset = 0;
 
-    public Bead (View view){
-        this.view = view;
-        initBead();
-        initBitmap();
+
+    private BeadStateManager beadStateManager;
+
+    public Bead(int id){
+        setId(id);
+        beadStateManager = new BeadStateManager(this);
     }
 
-    public Bead(View view,float locX,float locY,int indexX,int indexY){
-        this.view = view;
-        setLocation(locX,locY);
-        setIndex(indexX,indexY);
-        initBead();
-        initBitmap();
+    public Bead(int id,BeadType type){
+        setId(id);
+        beadStateManager = new BeadStateManager(this,type);
     }
 
-    protected void initBead(){
-        process = 0;
-    }
-
-    protected void initBitmap(){
-        src = new Rect();
-        dst = new Rect();
-        myPaint = new Paint();
-    }
-
-    public void drawBeat(Canvas canvas){
-        if(!isDisplay()){
-            canvas.save();
-            myPaint.setAlpha(90);
-            canvas.drawBitmap(bitmap, locX, locY, myPaint);
-            canvas.restore();
-            setDisplay(true);
-        }
-        else if(isDisappear()){
-            canvas.save();
-            myPaint.setAlpha(80);
-            canvas.drawBitmap(bitmap, locX, locY, myPaint);
-            canvas.restore();
-            //Log.d("TEST","drawDisappear");
-        }
-        else if(isDrop()){
-            canvas.save();
-            myPaint.setAlpha(120);
-            canvas.drawBitmap(bitmap, locX, locY, myPaint);
-            canvas.restore();
-            //Log.d("TEST","drawDrop");
+    @Override
+    public void setId(int id) {
+        if (id>=0&&id<MAX){
+            this.id = id;
         }
         else{
-            if(isSelected){
-                myPaint.setAlpha(40);
-                canvas.drawBitmap(bitmap, locX, locY, myPaint);
-            }
-            else {
-                myPaint.setAlpha(225);
-                canvas.drawBitmap(bitmap, locX, locY, myPaint);
-            }
+            Log.d(TAG,"id设置失败");
         }
     }
 
-    public void setLocation(float locX,float locY){
-        this.locX = locX;
-        this.locY = locY;
+    @Override
+    public boolean HandleMessage(Telegram tgm) {
+        return beadStateManager.HandleMessage(tgm);
     }
 
-    public void setIndex(int indexX,int indexY){
-        this.indexX = indexX;
-        this.indexY = indexY;
+    @Override
+    public void Update(Canvas canvas) {
+        beadStateManager.Update(canvas);
     }
 
-    public boolean isTouch() {
-        return isTouch;
+    public float getOffset() {
+        return offset;
     }
 
-    public void setTouch(boolean isTouch) {
-        this.isTouch = isTouch;
+    public void setOffset(float offset) {
+        this.offset = offset;
     }
 
-    public BeadType getBeadType() {
-        return beadType;
+    public void setType(BeadType type) {
+        this.type = type;
     }
 
-    public void setBeadType(BeadType beadType) {
-        this.beadType = beadType;
+    public Bitmap getBitmap() {
+        return bitmap;
     }
 
-    public boolean isSelected() {
-        return isSelected;
+    public void setBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
     }
 
-    public void setSelected(boolean isSelected) {
-        this.isSelected = isSelected;
+    public BeadStateManager getBeadStateManager() {
+        return beadStateManager;
     }
 
-    public float getLocY() {
-        return locY;
+    public void setBeadStateManager(BeadStateManager beadStateManager) {
+        this.beadStateManager = beadStateManager;
     }
 
-    public float getLocX() {
-        return locX;
-    }
-
-    public int getIndexX() {
-        return indexX;
-    }
-
-    public int getIndexY() {
-        return indexY;
-    }
-
-    public void setLocY(float locY) {
-        this.locY = locY;
-    }
-
-    public void setLocX(float locX) {
-        this.locX = locX;
-    }
-
-    public void setIndexY(int indexY) {
-        this.indexY = indexY;
-    }
-
-    public void setIndexX(int indexX) {
-        this.indexX = indexX;
-    }
-
-    public boolean isDisappear() {
-        return isDisappear;
-    }
-
-    public void setDisappear(boolean isDisappear) {
-        this.isDisappear = isDisappear;
-    }
-
-    public boolean isDisplay() {
-        return isDisplay;
-    }
-
-    public void setDisplay(boolean isDisplay) {
-        this.isDisplay = isDisplay;
-    }
-
-    public boolean isDrop() {
-        return isDrop;
-    }
-
-    public void setDrop(boolean isDrop) {
-        this.isDrop = isDrop;
-    }
-
-    public int getProcess() {
-        return process;
-    }
-
-    public void setProcess(int process) {
-        this.process = process;
+    public BeadType getType() {
+        return type;
     }
 }

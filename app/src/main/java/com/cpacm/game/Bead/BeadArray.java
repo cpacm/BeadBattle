@@ -1,66 +1,163 @@
 package com.cpacm.game.Bead;
 
 import android.graphics.Canvas;
+import android.util.Log;
 import android.view.View;
 
+import com.cpacm.game.BeadMessage.MessageDispatcher;
+import com.cpacm.game.BeadState.Bead_Disappear;
+import com.cpacm.game.BeadState.Bead_Normal;
+import com.cpacm.game.BeadState.Bead_Selected;
+import com.cpacm.game.IEntity.Entity;
 import com.cpacm.game.util.ConstantUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 珠子的二维数组，游戏的主要场所
  * Created by cpacm on 2014/10/10.
  */
 public class BeadArray {
+    private static final String TAG = "cpacm";
+
     private final static int ADVANCE = 0;
 
-    private Bead b[][] = new Bead [ConstantUtil.COUNT][ConstantUtil.COUNT];
-    private View view;
-    private BeadManager beadManager;
+    private Bead b[][] = new Bead[ConstantUtil.COUNT][ConstantUtil.COUNT];
+    private Integer a[] = new Integer[ConstantUtil.COUNT];
     private int size = ADVANCE;
     private float orgX = ADVANCE,orgY = ADVANCE;
-    private BeadControl beadControl;
-    private List<Bead> beadList;
-    private boolean ChangeSwitch = false;
+    private List<Bead> beadList,dropList;
+    private Bead lastBead = null;
 
-    public BeadArray(View view){
-        this.view = view;
-        beadManager = new BeadManager(this.view);
-        beadControl = new BeadControl();
-        //initArray();未设定坐标和大小，不能初始化，请在设定后认为调用初始化函数
-    }
-
-    public BeadArray(View view,float x,float y,int size){
-        this.view = view;
-        beadManager = new BeadManager(this.view);
-        beadControl = new BeadControl();
+    /**
+     * @param x 原始x坐标
+     * @param y 原始y坐标
+     */
+    public BeadArray(float x,float y){
+        beadList = new ArrayList<Bead>();
+        dropList = new ArrayList<Bead>();
         setOrgLoc(x,y);
-        setSize(size);
+        setSize(ConstantUtil.SIZE);
         initArray();
+        initA();
     }
 
+    /**
+     * 建立珠子类，填满二维数组
+     */
     public void initArray(){
+        int k = 0;
         for(int i=0;i<ConstantUtil.COUNT;i++){
             for(int j=0;j<ConstantUtil.COUNT;j++){
-                b[i][j] = beadManager.getBeadType(getLocX(i),getLocY(j),i,j);
+
+                b[i][j] = new Bead(k);
+                b[i][j].setIndex(i,j);
+                b[i][j].setLoc(getLocX(j),getLocY(i));
+                BeadManager.getInstance().RegisterEntity(b[i][j]);
+                k++;
             }
         }
     }
 
+    /**
+     * 画出珠子的数组
+     * @param canvas
+     */
     public void DrawArray(Canvas canvas){
         for(int i=0;i<ConstantUtil.COUNT;i++){
             for(int j=0;j<ConstantUtil.COUNT;j++){
-                beadControl.drawBeat(b[i][j],canvas);
+                b[i][j].Update(canvas);
             }
         }
     }
 
-    public void Update(float x,float y){
-        for(int i=0;i<ConstantUtil.COUNT;i++){
-            for(int j=0;j<ConstantUtil.COUNT;j++){
-                beadControl.setTouch(b[i][j], x, y);
+    /**
+     * 判断珠子是否被选中
+     * @param x
+     * @param y
+     */
+    public void BeadSelected(float x,float y){
+        for(int i = 0;i<ConstantUtil.COUNT;i++){
+            for(int j = 0;j<ConstantUtil.COUNT;j++){
+                setTouch(b[i][j],x,y);
             }
         }
     }
+
+    /**
+     * 根据传过来的坐标值来判断
+     * @param bead
+     * @param x
+     * @param y
+     */
+    public void setTouch(Bead bead,float x,float y){
+        if(x>=bead.getLocX() && x<=bead.getLocX()+ ConstantUtil.SIZE && y>=bead.getLocY() && y<=bead.getLocY()+ConstantUtil.SIZE){
+            if(!beadList.contains(bead)){
+                if(lastBead == null){
+                    a[bead.getY()]++;
+                    AddBead(bead);
+                    lastBead = bead;
+                    bead.getBeadStateManager().ChangeState(Bead_Selected.getInstance());
+                }else{
+                    setSelected(bead);
+                }
+            }
+        }
+    }
+
+    public void setSelected(Bead bead){
+        if (bead.getType() == lastBead.getType() && Sudoku(bead)) {
+            a[bead.getY()]++;
+            AddBead(bead);
+            lastBead = bead;
+            bead.getBeadStateManager().ChangeState(Bead_Selected.getInstance());
+        }
+    }
+
+    public boolean Sudoku(Bead bead){
+        if((bead.getX()<=lastBead.getX()+1&&bead.getY()>=lastBead.getY()-1)&&(bead.getX()>=lastBead.getX()-1&&bead.getY()<=lastBead.getY()+1)){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 选择结束后，调用这个
+     */
+    public void Clear(){
+        if(beadList.size()>0){
+            if(beadList.size()>1){
+                for(int i=0;i<beadList.size();i++){
+                    beadList.get(i).getBeadStateManager().ChangeState(Bead_Disappear.getInstance());
+                    int id = beadList.get(i).getId();
+                    while( id>=ConstantUtil.COUNT){
+                        MessageDispatcher.getInstance().DispatchMessage(0,id,id-ConstantUtil.COUNT,ConstantUtil.DROPCOUNT);
+                        id = id - ConstantUtil.COUNT;
+                        if(!dropList.contains(BeadManager.getInstance().GetEntityFromId(id))){
+                            Log.d("TEST","id"+id+"trueId"+BeadManager.getInstance().GetEntityFromId(id).getId());
+                            dropList.add(BeadManager.getInstance().GetEntityFromId(id));
+                        }
+                    }
+                    beadList.get(i).setId((a[beadList.get(i).getY()]-1)*ConstantUtil.COUNT+id);
+                    a[beadList.get(i).getY()]--;
+                }
+                for(int i=0;i<dropList.size();i++){
+                    MessageDispatcher.getInstance().DispatchMessage(0,dropList.get(i).getId(),dropList.get(i).getId(),ConstantUtil.DROP);
+                }
+            }
+            else{
+                beadList.get(0).getBeadStateManager().ChangeState(Bead_Normal.getInstance());
+            }
+            beadList.clear();
+            dropList.clear();
+            lastBead = null;
+            initA();
+            initMap();
+        }
+    }
+
+
 
     public float getLocX(int indexX){
         return indexX*size+orgX;
@@ -73,36 +170,35 @@ public class BeadArray {
     public void setOrgLoc(float x,float y){
         this.orgX = x;
         this.orgY = y;
+        //Log.d("TEST","x:"+x+",y:"+y);
     }
 
     public void setSize(int size) {
         this.size = size;
     }
 
-    public BeadControl getBeadControl() {
-        return beadControl;
-    }
-
-    public boolean isChangeSwitch() {
-        return ChangeSwitch;
-    }
-
-    public void setChangeSwitch(boolean changeSwitch) {
-        beadList = beadControl.getList();
-        if(beadList.size()>1){
-            ChangeSwitch = changeSwitch;
+    private void AddBead(Bead bead){
+        int i;
+        for(i = 0;i<beadList.size();i++){
+            if(beadList.get(i).getId()<bead.getId()){
+                break;
+            }
         }
-        else if(beadList.size()<=1){
-            beadControl.Clear(beadList.get(0));
-            beadControl.allClear();
+        beadList.add(i,bead);
+    }
+
+    public void initA(){
+        for(int i=0;i<ConstantUtil.COUNT;i++){
+            a[i] = 0;
         }
     }
 
-    public BeadManager getBeadManager() {
-        return beadManager;
+    public void initMap(){
+        for(int i=0;i<ConstantUtil.COUNT;i++){
+            for(int j=0;j<ConstantUtil.COUNT;j++){
+                BeadManager.getInstance().RegisterEntity(b[i][j]);
+            }
+        }
     }
 
-    public Bead[][] getB() {
-        return b;
-    }
 }

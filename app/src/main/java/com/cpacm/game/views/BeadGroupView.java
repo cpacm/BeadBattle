@@ -4,13 +4,11 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
 
 import com.cpacm.game.Bead.BeadArray;
@@ -19,11 +17,13 @@ import com.cpacm.game.thread.BeadGroupThread;
 import com.cpacm.game.util.ConstantUtil;
 
 /**
+ * 游戏主体，滑珠
+ *
  * Created by cpacm on 2014/10/9.
  */
-public class BeadGroupView extends SurfaceView implements SurfaceHolder.Callback {
+public class BeadGroupView extends LineBaseView {
 
-    private Bitmap beadPic;
+    private Bitmap bead_bk;
     private SurfaceHolder sfh;
     private Canvas canvas;
     private Paint myPaint;
@@ -52,22 +52,36 @@ public class BeadGroupView extends SurfaceView implements SurfaceHolder.Callback
 
     public void initBitmap(){
         myPaint = new Paint();
-        beadPic = BitmapFactory.decodeResource(getResources(), R.drawable.bead1);
-        Log.d("TEST", "pic: " + beadPic.getHeight() + " " + beadPic.getWidth());
-        ry = rx = (float) (ConstantUtil.ScreenWidth/(beadPic.getWidth()*ConstantUtil.COUNT*1.0));
+        bead_bk = BitmapFactory.decodeResource(getResources(), R.drawable.bead_bk);
+        Log.d("TEST", "pic: " + bead_bk.getHeight() + " " + bead_bk.getWidth());
+        rx = (float) (ConstantUtil.ScreenWidth/(bead_bk.getWidth()*1.0));
+        ry =(float) (ConstantUtil.ScreenHeight*ConstantUtil.BeadScreen/(bead_bk.getHeight()*1.0));
         Log.d("TEST","rx+ry: " +rx+ " "+ry);
-        ConstantUtil.SIZE = beadPic.getWidth();
-        beadArray = new BeadArray(this,0,0,ConstantUtil.SIZE);
+        //每个珠子的宽度
+        ConstantUtil.SIZE = BitmapFactory.decodeResource(getResources(), R.drawable.bead1).getHeight();
+        //珠子的二维数组类
+        Log.d("TEST","Size"+ConstantUtil.SIZE);
+        ConstantUtil.OFFSETY = getOffsetY();
+        Log.d("TEST","offX"+getOffsetX()+"offY"+getOffsetY());
+        beadArray = new BeadArray(getOffsetX(),getOffsetY());
     }
+
 
     public void OnDraw(){
         try {
             canvas = sfh.lockCanvas();
             canvas.save();
             canvas.scale(rx, ry);
-            canvas.drawColor(Color.BLACK);
+            canvas.drawBitmap(bead_bk,0,0,myPaint);
+            canvas.restore();
+            canvas.save();
+            canvas.scale(rx, rx);
             beadArray.DrawArray(canvas);
             canvas.restore();
+            //绘制珠子的二维数组
+
+            //线条残影的绘制
+            OnBaseDraw(canvas);
         }catch (Exception e){
 
         }finally {
@@ -79,6 +93,7 @@ public class BeadGroupView extends SurfaceView implements SurfaceHolder.Callback
 
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
+        //绘制珠子的线程
         bgThread = new BeadGroupThread(this);
         bgThread.start();
     }
@@ -93,27 +108,30 @@ public class BeadGroupView extends SurfaceView implements SurfaceHolder.Callback
         bgThread.setRun(false);
     }
 
+
     private class OnTouchListenerBead implements OnTouchListener {
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
+            //线条残影的触摸设置
+            setTouchEvent(motionEvent);
             if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
-                if(!beadArray.isChangeSwitch()) beadArray.Update(motionEvent.getX()/rx,motionEvent.getY()/ry);
+                beadArray.BeadSelected(motionEvent.getX()/rx,motionEvent.getY()/rx);
             }
             else if(motionEvent.getAction() == MotionEvent.ACTION_MOVE){
-                if(!beadArray.isChangeSwitch()) beadArray.Update(motionEvent.getX()/rx,motionEvent.getY()/ry);
+                beadArray.BeadSelected(motionEvent.getX()/rx,motionEvent.getY()/rx);
             }
             else if(motionEvent.getAction() == MotionEvent.ACTION_UP){
-                beadArray.setChangeSwitch(true);
+                beadArray.Clear();
             }
             return true;
         }
     }
 
-    public BeadArray getBeadArray() {
-        return beadArray;
+    public float getOffsetX(){
+        return (ConstantUtil.ScreenWidth - ConstantUtil.SIZE*ConstantUtil.COUNT*rx)/2/rx;
+    }
+    public float getOffsetY(){
+        return (ConstantUtil.ScreenHeight*ConstantUtil.BeadScreen - ConstantUtil.SIZE*ConstantUtil.COUNT*rx)/rx;
     }
 
-    public void setBeadArray(BeadArray beadArray) {
-        this.beadArray = beadArray;
-    }
 }

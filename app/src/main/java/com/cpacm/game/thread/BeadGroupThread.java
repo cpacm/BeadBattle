@@ -1,33 +1,35 @@
 package com.cpacm.game.thread;
 
-import com.cpacm.game.Bead.BeadStatus;
+import android.util.Log;
+
+import com.cpacm.game.BeadMessage.MessageDispatcher;
 import com.cpacm.game.util.ConstantUtil;
 import com.cpacm.game.views.BeadGroupView;
 
 /**
+ * 绘制珠子的线程
  * Created by cpacm on 2014/10/11.
  */
 public class BeadGroupThread extends Thread {
 
     private BeadGroupView view;
-
     private boolean isRun = false;
 
-    private BeadStatus beadStatus;
-
     public BeadGroupThread(BeadGroupView view){
-        this.view = view;
         isRun = true;
-        beadStatus = new BeadStatus(view.getBeadArray());
+        this.view = view;
     }
 
     @Override
     public void run() {
         while(isRun){
-            beadStatus.StatusChange();
+            long preTime = System.currentTimeMillis();
             view.OnDraw();
+            MessageDispatcher.getInstance().DispatchDelayedMessages();
+            long newTime = System.currentTimeMillis();
             try {
-                sleep(ConstantUtil.RATE);
+                if(newTime-preTime<ConstantUtil.RATE)
+                    sleep(ConstantUtil.RATE-newTime+preTime);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
