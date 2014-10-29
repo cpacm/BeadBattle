@@ -20,6 +20,8 @@ public class Bead extends Entity {
     private BeadType type;
     //珠子的图像资源
     private Bitmap bitmap;
+    //珠子消失的动画图片
+    private Bitmap bitmap_Disappear;
     //动画的偏移量
     private float offset = 0;
     //掉落格数
@@ -95,5 +97,13 @@ public class Bead extends Entity {
 
     public void setDrop_offset(int drop_offset) {
         this.drop_offset = drop_offset;
+    }
+
+    public Bitmap getBitmap_Disappear() {
+        return bitmap_Disappear;
+    }
+
+    public void setBitmap_Disappear(Bitmap bitmap_Disappear) {
+        this.bitmap_Disappear = bitmap_Disappear;
     }
 }

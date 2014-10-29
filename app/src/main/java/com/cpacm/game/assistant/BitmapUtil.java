@@ -1,6 +1,5 @@
 package com.cpacm.game.assistant;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
@@ -17,15 +16,12 @@ public class BitmapUtil {
     private static final Random RNG = new Random();
     private static BitmapUtil bitmapUtil = new BitmapUtil();
 
-    private Bitmap bitmap_RED;
-    private Bitmap bitmap_BLACK;
-    private Bitmap bitmap_GREEN;
-    private Bitmap bitmap_YELLOW;
-    private Bitmap bitmap_PINK;
-    private Bitmap bitmap_DISAPPEAR;
+    private Bitmap bitmaps[] = new Bitmap[5];
+    private Bitmap bitmaps_Disappear[] = new Bitmap[5];
 
     private BitmapUtil(){
         initBitmapUtil();
+        initBitmapUtil_Disappear();
     }
 
     public static BitmapUtil getInstance(){
@@ -33,24 +29,43 @@ public class BitmapUtil {
     }
 
     private void initBitmapUtil(){
-        bitmap_RED = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.bead1);
-        bitmap_BLACK = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.bead2);
-        bitmap_GREEN = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.bead3);
-        bitmap_YELLOW = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.bead4);
-        bitmap_PINK = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.bead5);
-        bitmap_DISAPPEAR = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.disappear);
+        bitmaps[0] = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.bead1);
+        bitmaps[1] = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.bead2);
+        bitmaps[2] = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.bead3);
+        bitmaps[3] = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.bead4);
+        bitmaps[4] = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.bead5);
+    }
+
+    private void initBitmapUtil_Disappear(){
+        bitmaps_Disappear[0] = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.red);
+        bitmaps_Disappear[1] = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.blue);
+        bitmaps_Disappear[2] = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.green);
+        bitmaps_Disappear[3] = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.yellow);
+        bitmaps_Disappear[4] = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.purple);
     }
 
     public Bitmap getBeadBitmap(BeadType type){
         Bitmap bitmap;
         switch(type){
-            case RED: bitmap = bitmap_RED;break;
-            case BLACK:bitmap = bitmap_BLACK;break;
-            case GREEN:bitmap = bitmap_GREEN;break;
-            case YELLOW:bitmap = bitmap_YELLOW;break;
-            case PINK:bitmap = bitmap_PINK;break;
+            case RED: bitmap = bitmaps[0];break;
+            case BLUE:bitmap = bitmaps[1];break;
+            case GREEN:bitmap = bitmaps[2];break;
+            case YELLOW:bitmap = bitmaps[3];break;
+            case PURPLE:bitmap = bitmaps[4];break;
+            default:bitmap = bitmaps[0];break;
+        }
+        return bitmap;
+    }
 
-            default:bitmap = bitmap_RED;break;
+    public Bitmap getBeadBitmap_Disappear(BeadType type){
+        Bitmap bitmap;
+        switch(type){
+            case RED: bitmap = bitmaps_Disappear[0];break;
+            case BLUE:bitmap = bitmaps_Disappear[1];break;
+            case GREEN:bitmap = bitmaps_Disappear[2];break;
+            case YELLOW:bitmap = bitmaps_Disappear[3];break;
+            case PURPLE:bitmap = bitmaps_Disappear[4];break;
+            default:bitmap = bitmaps_Disappear[0];break;
         }
         return bitmap;
     }
@@ -61,25 +76,12 @@ public class BitmapUtil {
         int roll = RNG.nextInt(5)+1;
         switch (roll){
             case 1:type = BeadType.RED;break;
-            case 2:type = BeadType.BLACK;break;
+            case 2:type = BeadType.BLUE;break;
             case 3:type = BeadType.GREEN;break;
             case 4:type = BeadType.YELLOW;break;
-            case 5:type = BeadType.PINK;break;
+            case 5:type = BeadType.PURPLE;break;
         }
         return type;
     }
-
-    //获得活动图片
-    public Bitmap getStatusBitmap(int status){
-        Bitmap bitmap;
-        switch(status){
-            case ConstantUtil.DISAPPEAR:{
-                bitmap = bitmap_DISAPPEAR;break;
-            }
-            default:bitmap = bitmap_DISAPPEAR;break;
-        }
-        return bitmap;
-    }
-
 
 }

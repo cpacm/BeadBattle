@@ -48,16 +48,17 @@ public class MessageDispatcher {
         long time = System.currentTimeMillis();
         //查看队列中是否有消息需要发送
         Iterator i = PriorityQ.iterator();//先迭代出来
-        while(i.hasNext()){//遍历
-            Telegram t = (Telegram)i.next();
-            if(t.getPatchTime()<time && t.getPatchTime()>0){
-                Bead b = BeadManager.getInstance().GetEntityFromId(t.getReceiver());
-                Discharge(b,t);
-                i.remove();
-                Log.d(TAG, "成功发送延时消息，并删除——" + t.getMsg());
-            }
-            else{
-                break;
+        synchronized(PriorityQ) {
+            while (i.hasNext()) {//遍历
+                Telegram t = (Telegram) i.next();
+                if (t.getPatchTime() < time && t.getPatchTime() > 0) {
+                    Bead b = BeadManager.getInstance().GetEntityFromId(t.getReceiver());
+                    Discharge(b, t);
+                    i.remove();
+                    Log.d(TAG, "成功发送延时消息，并删除——" + t.getMsg());
+                } else {
+                    break;
+                }
             }
         }
     }

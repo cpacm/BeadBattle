@@ -25,16 +25,17 @@ public class Bead_Drop implements IState<Bead> {
     }
     @Override
     public void Enter(Bead bead) {
+        BeadManager.getInstance().addDropCount(1);
         bead.setOffset(bead.getDrop_offset() * ConstantUtil.SIZE + bead.getLocY());
         bead.setX(bead.getX()+bead.getDrop_offset());
         bead.setId(bead.getX()*ConstantUtil.COUNT+bead.getY() );
-        bead.setDrop_offset(0);
+
     }
 
     @Override
     public void Execute(Bead bead, Canvas canvas) {
         if(bead.getOffset()>bead.getLocY()) {
-            bead.setLocY(bead.getLocY()+SPAN);
+            bead.setLocY(bead.getLocY()+SPAN*bead.getDrop_offset());
             canvas.drawBitmap(bead.getBitmap(),bead.getLocX(), bead.getLocY(),paint);
         }
         else{
@@ -47,6 +48,8 @@ public class Bead_Drop implements IState<Bead> {
     @Override
     public void Exit(Bead bead) {
         bead.setOffset(0);
+        bead.setDrop_offset(0);
+        BeadManager.getInstance().addDropCount(-1);
     }
 
     @Override

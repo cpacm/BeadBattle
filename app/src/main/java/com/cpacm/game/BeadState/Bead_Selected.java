@@ -18,7 +18,7 @@ public class Bead_Selected implements IState<Bead> {
     private Matrix mMatrix;
     private Paint paint = new Paint();
     private static final Bead_Selected bead_Selected = new Bead_Selected();
-
+    private static final float SHOCK = 1f;
     private Bead_Selected(){}
 
     @Override
@@ -30,9 +30,9 @@ public class Bead_Selected implements IState<Bead> {
     @Override
     public void Execute(Bead bead, Canvas canvas) {
         mMatrix.setTranslate(bead.getLocX()+bead.getOffset(),bead.getLocY());
-        bead.setOffset(bead.getOffset()>0.5f?-0.5f:bead.getOffset()+0.1f);
+        bead.setOffset(bead.getOffset()>SHOCK?-SHOCK:bead.getOffset()+SHOCK/5);
         mMatrix.postScale(0.98f,0.98f,bead.getLocX()+ ConstantUtil.SIZE/2f,bead.getLocY()+ ConstantUtil.SIZE/2f);
-        paint.setAlpha(160);
+        paint.setAlpha(150);
         canvas.drawBitmap(bead.getBitmap(), mMatrix, paint);
     }
 

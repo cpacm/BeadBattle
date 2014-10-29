@@ -22,11 +22,9 @@ import com.cpacm.game.util.ConstantUtil;
 public class Bead_Disappear implements IState<Bead> {
     private Paint paint = new Paint();
     public static Bead_Disappear bead_disappear = new Bead_Disappear();
-    private Bitmap bitmap;
     private Rect src,dst;
 
     private Bead_Disappear(){
-        bitmap = BitmapUtil.getInstance().getStatusBitmap(ConstantUtil.DISAPPEAR);
         src = new Rect();
         dst = new Rect();
     }
@@ -42,11 +40,11 @@ public class Bead_Disappear implements IState<Bead> {
         if(bead.getOffset()<15) {
             setDst(bead);
             setSrc((int) (bead.getOffset()/1));
-            canvas.drawBitmap(bitmap,src,dst,paint);
+            canvas.drawBitmap(bead.getBitmap_Disappear(),src,dst,paint);
             bead.setOffset(bead.getOffset()+1);
         }
         else{
-            canvas.drawBitmap(bitmap,src,dst,paint);
+            canvas.drawBitmap(bead.getBitmap_Disappear(),src,dst,paint);
             bead.getBeadStateManager().ChangeState(Bead_Appear.getInstance());
         }
     }

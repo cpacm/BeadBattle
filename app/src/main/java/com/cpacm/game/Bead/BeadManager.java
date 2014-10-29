@@ -19,6 +19,7 @@ public class BeadManager implements IEntityManager<Bead> {
     private BeadManager(){}
 
     private int disappearCount = 0;
+    private int dropCount = 0;
 
     @Override
     public void RegisterEntity(Bead bead) {
@@ -42,9 +43,12 @@ public class BeadManager implements IEntityManager<Bead> {
     public void addDisappearCount(int disappearCount) {
         this.disappearCount += disappearCount;
     }
+    public void addDropCount(int dropCount) {
+        this.dropCount += dropCount;
+    }
 
-    public boolean isDisappear(){
-        if(disappearCount == 0){
+    public boolean isNext(){
+        if(disappearCount == 0 && dropCount == 0){
             return true;
         }
         return false;

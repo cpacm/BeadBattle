@@ -71,6 +71,7 @@ public class BeadStateManager {
         BeadType type = BitmapUtil.getInstance().setRandomType();
         bead.setType(type);
         bead.setBitmap(BitmapUtil.getInstance().getBeadBitmap(type));//获取珠子的图片
+        bead.setBitmap_Disappear(BitmapUtil.getInstance().getBeadBitmap_Disappear(type));//获取消失的动画
     }
 
 
