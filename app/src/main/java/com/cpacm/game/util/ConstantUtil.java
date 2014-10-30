@@ -23,7 +23,8 @@ public class ConstantUtil {
     public static final float BeadScreen = 5/9.0f;
     //战争所占屏幕的比例
     public static final float BattleScreen = 4/9.0f;
-
+    //屏幕缩放的比例
+    //public static float SCALE = 1f;
     //手机屏幕的各个参数
     public static int ScreenWidth;
     public static int ScreenHeight;

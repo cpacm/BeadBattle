@@ -5,6 +5,7 @@
 
     <com.cpacm.game.views.BeadGroupView
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+    />
 
 </RelativeLayout>

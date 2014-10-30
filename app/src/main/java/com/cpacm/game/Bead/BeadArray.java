@@ -1,6 +1,7 @@
 package com.cpacm.game.Bead;
 
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.util.Log;
 
 import com.cpacm.game.BeadMessage.MessageDispatcher;
@@ -27,6 +28,8 @@ public class BeadArray {
     private float orgX = ADVANCE, orgY = ADVANCE;
     private List<Bead> beadList, dropList;
     private Bead lastBead = null;
+    private Rect drawRect,scaleRect;
+    private boolean flag = true;
 
     /**
      * @param x 原始x坐标
@@ -35,10 +38,16 @@ public class BeadArray {
     public BeadArray(float x, float y) {
         beadList = new ArrayList<Bead>();
         dropList = new ArrayList<Bead>();
+        drawRect = new Rect(0,0,ConstantUtil.ScreenWidth,(int)(ConstantUtil.ScreenHeight*ConstantUtil.BeadScreen));
+        scaleRect = new Rect();
         setOrgLoc(x, y);
         setSize(ConstantUtil.SIZE);
         initArray();
         initA();
+    }
+
+    private void initRect(){
+        drawRect.set(ConstantUtil.ScreenWidth,(int)orgY,0,0);
     }
 
     /**
@@ -48,7 +57,6 @@ public class BeadArray {
         int k = 0;
         for (int i = 0; i < ConstantUtil.COUNT; i++) {
             for (int j = 0; j < ConstantUtil.COUNT; j++) {
-
                 b[i][j] = new Bead(k);
                 b[i][j].setIndex(i, j);
                 b[i][j].setLoc(getLocX(j), getLocY(i));
@@ -79,7 +87,11 @@ public class BeadArray {
      */
     public void BeadSelected(float x, float y) {
         if (BeadManager.getInstance().isNext()) {
-            initMap();
+            if(flag){
+                initMap();
+                initRect();
+                flag = false;
+            }
             for (int i = 0; i < ConstantUtil.COUNT; i++) {
                 for (int j = 0; j < ConstantUtil.COUNT; j++) {
                     setTouch(b[i][j], x, y);
@@ -159,6 +171,7 @@ public class BeadArray {
             dropList.clear();
             lastBead = null;
             initA();
+            flag = true;
         }
     }
 
@@ -188,6 +201,15 @@ public class BeadArray {
             }
         }
         beadList.add(i, bead);
+        if(bead.getLocX()<drawRect.left){
+            drawRect.left = (int)bead.getLocX();
+        }
+        if(bead.getLocX()+ConstantUtil.SIZE>drawRect.right){
+            drawRect.right = (int)(bead.getLocX())+ConstantUtil.SIZE;
+        }
+        if(bead.getLocY()>drawRect.bottom){
+            drawRect.bottom = (int)(bead.getLocY())+ConstantUtil.SIZE;
+        }
     }
 
     public void initA() {
@@ -203,5 +225,8 @@ public class BeadArray {
             }
         }
     }
-
+    public Rect getScaleRect() {
+        scaleRect.set(drawRect.left,drawRect.top,drawRect.right,drawRect.bottom);
+        return scaleRect;
+    }
 }

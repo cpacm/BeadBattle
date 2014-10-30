@@ -19,7 +19,7 @@ public class Bead_Appear implements IState<Bead> {
     private static final Bead_Appear bead_Appear = new Bead_Appear();
     private Paint paint;
     private Matrix mMatrix;
-    private int AnimaTime = 15;//动画的帧数
+    private int AnimaTime = 10;//动画的帧数
 
     private Bead_Appear(){
         paint = new Paint();
@@ -27,6 +27,7 @@ public class Bead_Appear implements IState<Bead> {
 
     @Override
     public void Enter(Bead bead) {
+        BeadManager.getInstance().addAppearCount(1);
         bead.setOffset(0);
         mMatrix = new Matrix();
     }
@@ -49,6 +50,7 @@ public class Bead_Appear implements IState<Bead> {
 
     @Override
     public void Exit(Bead bead) {
+        BeadManager.getInstance().addAppearCount(-1);
         bead.setOffset(0);
     }
 

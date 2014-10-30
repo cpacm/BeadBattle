@@ -5,6 +5,7 @@ import android.util.Log;
 import com.cpacm.game.Bead.Bead;
 import com.cpacm.game.Bead.BeadManager;
 
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
@@ -50,15 +51,34 @@ public class MessageDispatcher {
         Iterator i = PriorityQ.iterator();//先迭代出来
         synchronized(PriorityQ) {
             while (i.hasNext()) {//遍历
-                Telegram t = (Telegram) i.next();
-                if (t.getPatchTime() < time && t.getPatchTime() > 0) {
-                    Bead b = BeadManager.getInstance().GetEntityFromId(t.getReceiver());
-                    Discharge(b, t);
-                    i.remove();
-                    Log.d(TAG, "成功发送延时消息，并删除——" + t.getMsg());
-                } else {
-                    break;
+                Telegram t = null;
+                try{
+                    t = (Telegram) i.next();
+                    if (t.getPatchTime() < time && t.getPatchTime() > 0) {
+                        Bead b = BeadManager.getInstance().GetEntityFromId(t.getReceiver());
+                        Discharge(b, t);
+                        i.remove();
+                        Log.d(TAG, "成功发送延时消息，并删除——" + t.getMsg());
+                    } else {
+                        break;
+                    }
+                }catch(ConcurrentModificationException e){
+                    i = PriorityQ.iterator();
+                    if(i.hasNext()) {
+                        t = (Telegram) i.next();
+                        if (t.getPatchTime() < time && t.getPatchTime() > 0) {
+                            Bead b = BeadManager.getInstance().GetEntityFromId(t.getReceiver());
+                            Discharge(b, t);
+                            i.remove();
+                            Log.d(TAG, "成功发送延时消息，并删除——" + t.getMsg());
+                        } else {
+                            break;
+                        }
+                    }
+                }finally {
+
                 }
+
             }
         }
     }

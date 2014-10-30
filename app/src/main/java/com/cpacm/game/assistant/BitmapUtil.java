@@ -2,6 +2,8 @@ package com.cpacm.game.assistant;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.util.Log;
 
 import com.cpacm.game.Bead.BeadType;
 import com.cpacm.game.beadbattle.R;
@@ -18,8 +20,12 @@ public class BitmapUtil {
 
     private Bitmap bitmaps[] = new Bitmap[5];
     private Bitmap bitmaps_Disappear[] = new Bitmap[5];
+    private Bitmap bitmap;
+    private Bitmap bitmap_BackGround;
+    private float scaleX,scaleY;
 
     private BitmapUtil(){
+        initBitmapUtil_BackGround();
         initBitmapUtil();
         initBitmapUtil_Disappear();
     }
@@ -28,24 +34,41 @@ public class BitmapUtil {
         return bitmapUtil;
     }
 
+    private void initBitmapUtil_BackGround(){
+        bitmap_BackGround = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.bead_bk);
+        float rx = (float) (ConstantUtil.ScreenWidth / (bitmap_BackGround.getWidth() * 1.0));
+        float ry = (float) (ConstantUtil.ScreenHeight * ConstantUtil.BeadScreen / (bitmap_BackGround.getHeight() * 1.0));
+        scaleX = rx;
+        scaleY = ry;
+        bitmap_BackGround = CreateBitmap(bitmap_BackGround);
+    }
+
+    private Bitmap CreateBitmap(Bitmap preBitmap){
+        Matrix matrix = new Matrix();
+        matrix.postScale(scaleX,scaleY);
+        return Bitmap.createBitmap(preBitmap,0,0,preBitmap.getWidth(),preBitmap.getHeight(),matrix, true);
+    }
+
     private void initBitmapUtil(){
-        bitmaps[0] = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.bead1);
-        bitmaps[1] = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.bead2);
-        bitmaps[2] = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.bead3);
-        bitmaps[3] = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.bead4);
-        bitmaps[4] = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.bead5);
+        scaleY = scaleX;
+        bitmaps[0] = CreateBitmap(BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.bead1));
+        bitmaps[1] = CreateBitmap(BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.bead2));
+        bitmaps[2] = CreateBitmap(BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.bead3));
+        bitmaps[3] = CreateBitmap(BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.bead4));
+        bitmaps[4] = CreateBitmap(BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.bead5));
+        ConstantUtil.SIZE = bitmaps[0].getWidth();
     }
 
     private void initBitmapUtil_Disappear(){
-        bitmaps_Disappear[0] = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.red);
-        bitmaps_Disappear[1] = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.blue);
-        bitmaps_Disappear[2] = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.green);
-        bitmaps_Disappear[3] = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.yellow);
-        bitmaps_Disappear[4] = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.purple);
+        scaleY = scaleX;
+        bitmaps_Disappear[0] = CreateBitmap(BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.red));
+        bitmaps_Disappear[1] = CreateBitmap(BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.blue));
+        bitmaps_Disappear[2] = CreateBitmap(BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.green));
+        bitmaps_Disappear[3] = CreateBitmap(BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.yellow));
+        bitmaps_Disappear[4] = CreateBitmap(BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.purple));
     }
 
     public Bitmap getBeadBitmap(BeadType type){
-        Bitmap bitmap;
         switch(type){
             case RED: bitmap = bitmaps[0];break;
             case BLUE:bitmap = bitmaps[1];break;
@@ -58,7 +81,6 @@ public class BitmapUtil {
     }
 
     public Bitmap getBeadBitmap_Disappear(BeadType type){
-        Bitmap bitmap;
         switch(type){
             case RED: bitmap = bitmaps_Disappear[0];break;
             case BLUE:bitmap = bitmaps_Disappear[1];break;
@@ -84,4 +106,11 @@ public class BitmapUtil {
         return type;
     }
 
+    public Bitmap getBitmap_BackGround(){
+        return bitmap_BackGround;
+    }
+
+    public float getScaleX() {
+        return scaleX;
+    }
 }

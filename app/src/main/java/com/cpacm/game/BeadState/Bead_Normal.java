@@ -16,6 +16,7 @@ import com.cpacm.game.util.ConstantUtil;
 public class Bead_Normal implements IState<Bead> {
 
     private static final Bead_Normal bead_Normal = new Bead_Normal();
+    private Paint paint = new Paint();
 
     private Bead_Normal() {
     }
@@ -27,7 +28,7 @@ public class Bead_Normal implements IState<Bead> {
 
     @Override
     public void Execute(Bead bead, Canvas canvas) {
-        canvas.drawBitmap(bead.getBitmap(), bead.getLocX(), bead.getLocY(), new Paint());
+       canvas.drawBitmap(bead.getBitmap(), bead.getLocX(), bead.getLocY(), paint);
     }
 
     @Override
@@ -42,16 +43,16 @@ public class Bead_Normal implements IState<Bead> {
 
     @Override
     public boolean OnMessage(Bead bead, Telegram msg) {
-        switch(msg.getMsg()){
-            case ConstantUtil.SELECTED:{
+        switch (msg.getMsg()) {
+            case ConstantUtil.SELECTED: {
                 bead.getBeadStateManager().ChangeState(Bead_Selected.getInstance());
                 return true;
             }
-            case ConstantUtil.DROPCOUNT:{
-                bead.setDrop_offset(bead.getDrop_offset()+1);
+            case ConstantUtil.DROPCOUNT: {
+                bead.setDrop_offset(bead.getDrop_offset() + 1);
                 return true;
             }
-            case ConstantUtil.DROP:{
+            case ConstantUtil.DROP: {
                 bead.getBeadStateManager().ChangeState(Bead_Drop.getInstance());
                 return true;
             }
