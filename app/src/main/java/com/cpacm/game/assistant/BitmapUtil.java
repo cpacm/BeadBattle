@@ -22,6 +22,7 @@ public class BitmapUtil {
     private Bitmap bitmaps_Disappear[] = new Bitmap[5];
     private Bitmap bitmap;
     private Bitmap bitmap_BackGround;
+    private Bitmap bitmap_Cursor;
     private float scaleX,scaleY;
 
     private BitmapUtil(){
@@ -36,11 +37,13 @@ public class BitmapUtil {
 
     private void initBitmapUtil_BackGround(){
         bitmap_BackGround = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.bead_bk);
+        bitmap_Cursor = BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.cursor);
         float rx = (float) (ConstantUtil.ScreenWidth / (bitmap_BackGround.getWidth() * 1.0));
         float ry = (float) (ConstantUtil.ScreenHeight * ConstantUtil.BeadScreen / (bitmap_BackGround.getHeight() * 1.0));
         scaleX = rx;
         scaleY = ry;
         bitmap_BackGround = CreateBitmap(bitmap_BackGround);
+        bitmap_Cursor = CreateBitmap(bitmap_Cursor);
     }
 
     private Bitmap CreateBitmap(Bitmap preBitmap){
@@ -108,6 +111,10 @@ public class BitmapUtil {
 
     public Bitmap getBitmap_BackGround(){
         return bitmap_BackGround;
+    }
+
+    public Bitmap getBitmap_Cursor() {
+        return bitmap_Cursor;
     }
 
     public float getScaleX() {

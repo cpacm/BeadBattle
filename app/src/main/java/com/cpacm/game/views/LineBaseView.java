@@ -18,7 +18,6 @@ import com.cpacm.game.assistant.DragPointer;
  */
 public abstract class LineBaseView extends SurfaceView implements SurfaceHolder.Callback{
 
-    private Paint basePaint;
     protected DragPointer dpList;
 
     public LineBaseView(Context context) {
@@ -40,13 +39,7 @@ public abstract class LineBaseView extends SurfaceView implements SurfaceHolder.
     }
 
     public void initBaseBitmap(){
-        basePaint = new Paint();
-        basePaint.setColor(Color.BLUE);
-        // myPaint.setStyle(Paint.Style.FILL_AND_STROKE);
-        basePaint.setStyle(Paint.Style.STROKE);
-        basePaint.setStrokeWidth(20.f);
-        basePaint.setStrokeCap(Paint.Cap.ROUND);
-        basePaint.setAntiAlias(true);
+
     }
 
     /**
@@ -57,15 +50,7 @@ public abstract class LineBaseView extends SurfaceView implements SurfaceHolder.
         canvas.save();
         //画的内容是z轴的，后画的会覆盖前面画的
         if(dpList.isDraw()) {
-            for (int i = 0; i < dpList.getNum() - 1; i++) {
-                final Path path = new Path();
-                basePaint.setAlpha((i * 8) < 255 ? (i * 8) : 255);
-                path.moveTo(dpList.getLocX().get(i), dpList.getLocY().get(i));
-                final float x2 = (dpList.getLocX().get(i + 1) + dpList.getLocX().get(i)) / 2;
-                final float y2 = (dpList.getLocY().get(i + 1) + dpList.getLocY().get(i)) / 2;
-                path.quadTo(x2, y2, dpList.getLocX().get(i + 1), dpList.getLocY().get(i + 1));
-                canvas.drawPath(path, basePaint);
-            }
+            dpList.draw(canvas);
         }
         canvas.restore();
 
