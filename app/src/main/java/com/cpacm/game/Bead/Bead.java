@@ -4,8 +4,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.util.Log;
 
-import com.cpacm.game.IEntity.Entity;
 import com.cpacm.game.BeadMessage.Telegram;
+import com.cpacm.game.IEntity.Entity;
 import com.cpacm.game.util.ConstantUtil;
 
 /**

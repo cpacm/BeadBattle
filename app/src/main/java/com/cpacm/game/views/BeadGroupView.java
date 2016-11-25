@@ -17,7 +17,6 @@ import android.view.View;
 
 import com.cpacm.game.Bead.BeadArray;
 import com.cpacm.game.assistant.BitmapUtil;
-import com.cpacm.game.beadbattle.R;
 import com.cpacm.game.thread.BeadGroupThread;
 import com.cpacm.game.util.ConstantUtil;
 

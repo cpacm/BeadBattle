@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.cpacm.game.beadbattle" >
+    package="com.cpacm.game">
+    <!-- 屏幕自适应 -->
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true" />
 
     <application
         android:name="com.cpacm.game.assistant.MyApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+        android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
 
         <!-- android:screenOrientation="landscape" -->
         <activity
-            android:name=".WelcomeActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/app_name" >
+            android:name="com.cpacm.game.MainActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -21,16 +26,18 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".BeadActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_bead" >
+            android:name="com.cpacm.game.WelcomeActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
 
         </activity>
+        <activity
+            android:name="com.cpacm.game.BeadActivity"
+            android:label="@string/title_activity_bead"
+            android:screenOrientation="portrait">
+
+        </activity>
+
     </application>
-    <!-- 屏幕自适应 -->
-    <supports-screens
-        android:anyDensity="true"
-        android:largeScreens="true"
-        android:normalScreens="true" />
 
 </manifest>

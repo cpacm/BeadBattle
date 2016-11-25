@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.cpacm.game.beadbattle.WelcomeActivity">
+    tools:context="com.cpacm.game.beadbattle.com.cpacm.game.WelcomeActivity">
 
     <com.cpacm.game.views.WelcomeView
         android:id="@+id/welcome"

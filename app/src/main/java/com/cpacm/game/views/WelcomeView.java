@@ -11,7 +11,7 @@ import android.util.Log;
 
 import android.view.SurfaceHolder;
 
-import com.cpacm.game.beadbattle.R;
+import com.cpacm.game.R;
 import com.cpacm.game.util.ConstantUtil;
 
 /**

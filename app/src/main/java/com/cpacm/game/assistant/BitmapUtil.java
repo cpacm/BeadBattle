@@ -3,10 +3,9 @@ package com.cpacm.game.assistant;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.util.Log;
 
 import com.cpacm.game.Bead.BeadType;
-import com.cpacm.game.beadbattle.R;
+import com.cpacm.game.R;
 import com.cpacm.game.util.ConstantUtil;
 
 import java.util.Random;

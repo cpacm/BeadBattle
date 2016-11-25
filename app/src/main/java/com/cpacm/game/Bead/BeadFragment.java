@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.cpacm.game.beadbattle.R;
+import com.cpacm.game.R;
 
 /**
  * Created by cpacm on 2014/10/10.
