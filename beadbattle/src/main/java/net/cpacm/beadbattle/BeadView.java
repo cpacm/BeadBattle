@@ -58,7 +58,6 @@ public class BeadView extends View {
         super(context);
         this.context = context;
         this.beadId = beadId;
-        beadType = BeadUtil.getRandomType();
         initBead();
     }
 
@@ -66,6 +65,7 @@ public class BeadView extends View {
         if (paint == null) {
             paint = new Paint();
         }
+        beadType = BeadUtil.getRandomType();
         beadBitmap = BeadUtil.getBeadBitmap(context, beadType);
         src = new Rect(0, 0, beadBitmap.getWidth(), beadBitmap.getHeight());
         drop = 0;
@@ -173,8 +173,7 @@ public class BeadView extends View {
             return null;
         }
         selectedAnimator.cancel();
-        valueAnimator.removeAllListeners();
-        valueAnimator.removeAllUpdateListeners();
+        valueAnimator = new ObjectAnimator();
         valueAnimator.setInterpolator(deceInterpolator);
         valueAnimator.setTarget(this);
         valueAnimator.setFloatValues(1f, 0f);
@@ -197,8 +196,8 @@ public class BeadView extends View {
                 setRotation(0);
                 setScaleX(1f);
                 setScaleY(1f);
-                valueAnimator.removeAllListeners();
-                valueAnimator.removeAllUpdateListeners();
+                initBead();
+                postInvalidate();
             }
         });
         return valueAnimator;
@@ -213,8 +212,7 @@ public class BeadView extends View {
         if (!changeState(STATE_APPEAR)) {
             return null;
         }
-        valueAnimator.removeAllListeners();
-        valueAnimator.removeAllUpdateListeners();
+        valueAnimator = new ObjectAnimator();
         valueAnimator.setInterpolator(appearInterpolator);
         valueAnimator.setTarget(this);
         valueAnimator.setFloatValues(0f, 1f);
@@ -228,6 +226,14 @@ public class BeadView extends View {
             }
         });
         valueAnimator.addListener(new AnimatorListenerAdapter() {
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                setTranslationY(0);
+                setTranslationX(0);
+            }
+
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
@@ -247,7 +253,7 @@ public class BeadView extends View {
      */
     public void startSelectedAnimator() {
         if (!changeState(STATE_SELECTED)) return;
-        valueAnimator.removeAllListeners();
+        valueAnimator = new ObjectAnimator();
         valueAnimator.setInterpolator(deceInterpolator);
         valueAnimator.setTarget(this);
         valueAnimator.setFloatValues(1f, .8f);
@@ -278,8 +284,7 @@ public class BeadView extends View {
         if (!changeState(STATE_DROP)) {
             return null;
         }
-        valueAnimator.removeAllListeners();
-        valueAnimator.removeAllUpdateListeners();
+        valueAnimator = new ObjectAnimator();
         valueAnimator.setInterpolator(deceInterpolator);
         valueAnimator.setTarget(this);
         valueAnimator.setFloatValues(1f, 0f);

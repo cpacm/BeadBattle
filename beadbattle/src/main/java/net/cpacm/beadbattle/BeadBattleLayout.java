@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -23,25 +24,24 @@ import java.util.List;
 
 public class BeadBattleLayout extends ViewGroup {
 
-    private static int APPEAR_SEQUENT_DURATION = 50;
-    private static int APPEAR_TOGETHER_DURATION = 300;
-    private static int DISAPPEAR_TOGETHER_DURATION = 500;
-    private static int DISAPPEAR_SEQUENT_DURATION = 200;
-    private static int DROP_TOGETHER_DURATION = 100;
+    private final static int APPEAR_SEQUENT_DURATION = 50;
+    private final static int APPEAR_TOGETHER_DURATION = 300;
+    private final static int DISAPPEAR_TOGETHER_DURATION = 500;
+    private final static int DISAPPEAR_SEQUENT_DURATION = 200;
+    private final static int DROP_TOGETHER_DURATION = 200;
 
-    private AnimatorSet appearAnimation = new AnimatorSet();
-    private AnimatorSet disappearAnimation = new AnimatorSet();
-    private AnimatorSet dropAnimation = new AnimatorSet();
+    private AnimatorSet appearAnimation;
+    private AnimatorSet disappearAnimation;
+    private AnimatorSet dropAnimation;
 
     private List<BeadView> appearAnimationList = new ArrayList<>();
     private List<BeadView> dropAnimationList = new ArrayList<>();
-    private List<BeadView> disappearAnimationList = new ArrayList<>();
     private List<BeadView> selectedAnimationList = new ArrayList<>();
 
     private Context context;
 
-    private int countX = 8;
-    private int countY = 8;
+    private int countX = 6;
+    private int countY = 6;
     private SparseArray<BeadView> beadViewArray;
     private int beadSquare = 100;
     private boolean canTouch = true;
@@ -70,6 +70,12 @@ public class BeadBattleLayout extends ViewGroup {
             addView(beadView);
         }
         appearAnimation(false);
+    }
+
+    public void setCountXY(int x, int y) {
+        countX = x;
+        countY = y;
+        postInvalidate();
     }
 
     /**
@@ -123,10 +129,10 @@ public class BeadBattleLayout extends ViewGroup {
                 addBeadAfterSelected(beadView);
             }
         } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-            if (selectedAnimationList.size() < 2) {
+            if (selectedAnimationList.size() == 1) {
                 selectedAnimationList.get(0).changeState(BeadView.STATE_NORMAL);
                 selectedAnimationList.clear();
-            } else {
+            } else if (selectedAnimationList.size() > 1) {
                 calculateDropBead();
                 disappearAnimation(true);
             }
@@ -139,8 +145,8 @@ public class BeadBattleLayout extends ViewGroup {
      ***************************/
 
     public int calculateIndexFromXY(float x, float y) {
-        int offsetX = getPaddingLeft();
-        int offsetY = getPaddingTop();
+        int offsetX = (getMeasuredWidth() - countX * beadSquare) / 2;
+        int offsetY = (getMeasuredHeight() - countY * beadSquare) / 2;
         int ix = ((int) x - offsetX) / beadSquare;
         int iy = ((int) y - offsetY) / beadSquare;
         if (ix < 0 || ix < 0) return -1;
@@ -152,7 +158,7 @@ public class BeadBattleLayout extends ViewGroup {
      * 判断是否添加到选择列表中
      */
     public void addBeadAfterSelected(BeadView beadView) {
-        if (beadView.getState() != BeadView.STATE_NORMAL) {
+        if (beadView == null || beadView.getState() != BeadView.STATE_NORMAL) {
             return;
         }
         if (selectedAnimationList.size() == 0) {
@@ -185,7 +191,7 @@ public class BeadBattleLayout extends ViewGroup {
                 index = index - countX;
                 BeadView dropView = beadViewArray.get(index);
                 dropView.addDropCount();
-                if (!dropAnimationList.contains(dropView)) {
+                if (!dropAnimationList.contains(dropView) && !selectedAnimationList.contains(dropView)) {
                     dropAnimationList.add(dropView);
                 }
             }
@@ -197,6 +203,12 @@ public class BeadBattleLayout extends ViewGroup {
      * 珠子index置换,避免错位
      */
     public void calculateSwitchBead() {
+        Collections.sort(dropAnimationList, new Comparator<BeadView>() {
+            @Override
+            public int compare(BeadView o1, BeadView o2) {
+                return o2.getBeadId() - o1.getBeadId();
+            }
+        });
         for (BeadView beadView : dropAnimationList) {
             int sIndex = beadView.getBeadId() + countX * beadView.getDrop();
             BeadView sBeadView = beadViewArray.get(sIndex);
@@ -209,10 +221,6 @@ public class BeadBattleLayout extends ViewGroup {
 
     /**
      * 珠子连接判断
-     *
-     * @param lastIndex
-     * @param index
-     * @return
      */
     public boolean sudoku(int lastIndex, int index) {
         int x = lastIndex % countX;
@@ -225,6 +233,10 @@ public class BeadBattleLayout extends ViewGroup {
         y = index / countX;
         return x >= lastLeft && x <= lastRight && y >= lastTop && y <= lastBottom;
     }
+
+    /**************************
+     * Animation
+     ***************************/
 
     /**
      * 出现动画
@@ -242,10 +254,12 @@ public class BeadBattleLayout extends ViewGroup {
             if (animator != null) {
                 animators.add(animator);
             }
+            if (withAnimation) {
+                bringChildToFront(beadView);
+            }
         }
         Collections.reverse(animators);
         if (withAnimation) {
-            appearAnimation.setDuration(200);
             appearAnimation.setDuration(APPEAR_TOGETHER_DURATION);
             appearAnimation.playTogether(animators);
         } else {
@@ -258,6 +272,7 @@ public class BeadBattleLayout extends ViewGroup {
             public void onAnimationStart(Animator animation) {
                 super.onAnimationStart(animation);
                 canTouch = false;
+                requestLayout();
             }
 
             @Override
@@ -317,6 +332,10 @@ public class BeadBattleLayout extends ViewGroup {
      */
     public void dropAnimation() {
         if (dropAnimationList.size() == 0) {
+            if (selectedAnimationList.size() != 0) {
+                appearAnimationList.addAll(selectedAnimationList);
+                appearAnimation(true);
+            }
             return;
         }
         dropAnimation = new AnimatorSet();
@@ -343,7 +362,6 @@ public class BeadBattleLayout extends ViewGroup {
                 canTouch = true;
                 appearAnimationList.addAll(selectedAnimationList);
                 dropAnimationList.clear();
-                requestLayout();
                 appearAnimation(true);
             }
         });
