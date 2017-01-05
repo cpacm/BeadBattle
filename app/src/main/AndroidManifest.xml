@@ -8,7 +8,6 @@
         android:normalScreens="true" />
 
     <application
-        android:name="com.cpacm.game.assistant.MyApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
@@ -24,18 +23,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name="com.cpacm.game.WelcomeActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait">
-
-        </activity>
-        <activity
-            android:name="com.cpacm.game.BeadActivity"
-            android:label="@string/title_activity_bead"
-            android:screenOrientation="portrait">
-
         </activity>
 
     </application>

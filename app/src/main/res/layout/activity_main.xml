@@ -4,20 +4,26 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="@drawable/background"
+    android:background="@drawable/beadbattle_bk"
+    android:padding="16dp"
     tools:context="com.cpacm.game.MainActivity">
 
     <net.cpacm.beadbattle.BeadBattleLayout
         android:id="@+id/battle_layout"
         android:layout_width="300dp"
         android:layout_height="300dp"
-        android:padding="15dp"
-        android:layout_centerInParent="true">
+        android:layout_centerInParent="true"
+        android:padding="16dp" />
 
-    </net.cpacm.beadbattle.BeadBattleLayout>
+    <TextView
+        android:id="@+id/bead_score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/battle_layout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:text="SCORE"
+        android:textColor="@android:color/holo_blue_dark"
+        android:textSize="24sp" />
 
 </RelativeLayout>

@@ -9,25 +9,22 @@ import android.util.LruCache;
 import java.util.Random;
 
 /**
- * Created by cpacm on 2014/10/25.
+ * @author: cpacm
+ * @date: 2014/10/25
+ * @desciption: 利用 LruCache 缓存珠子图片
+ *
  */
-public class BeadUtil {
+class BeadUtil {
 
-    public final static int BEAD_TOTAL = 5;
+    private final static int BEAD_TOTAL = 5;
 
-    public final static int BEAD_RED = 0;
-    public final static int BEAD_BLUE = 1;
-    public final static int BEAD_GREEN = 2;
-    public final static int BEAD_YELLOW = 3;
-    public final static int BEAD_PURPLE = 4;
+    private final static int BEAD_RED = 0;
+    private final static int BEAD_BLUE = 1;
+    private final static int BEAD_GREEN = 2;
+    private final static int BEAD_YELLOW = 3;
+    private final static int BEAD_PURPLE = 4;
 
-    public final static int BEAD_ANIMATION_RED = 5;
-    public final static int BEAD_ANIMATION_BLUE = 6;
-    public final static int BEAD_ANIMATION_GREEN = 7;
-    public final static int BEAD_ANIMATION_YELLOW = 8;
-    public final static int BEAD_ANIMATION_PURPLE = 9;
-
-    public final static int MAX_MEMORY = (int) (Runtime.getRuntime().maxMemory() / 1024) / 8;
+    final static int MAX_MEMORY = (int) (Runtime.getRuntime().maxMemory() / 1024) / 8;
 
     private static final Random RNG = new Random();
 
@@ -38,7 +35,7 @@ public class BeadUtil {
         }
     };
 
-    public static Bitmap getBeadBitmap(Context context,int type){
+    static Bitmap getBeadBitmap(Context context,int type){
         Bitmap bitmap = bitmapCache.get(type);
         if(bitmap == null){
             bitmap = initBeadBitmap(context,type);
@@ -54,11 +51,6 @@ public class BeadUtil {
             case BEAD_GREEN:resId = R.drawable.bead3;break;
             case BEAD_YELLOW:resId = R.drawable.bead4;break;
             case BEAD_PURPLE:resId = R.drawable.bead5;break;
-            case BEAD_ANIMATION_RED:resId = R.drawable.red;break;
-            case BEAD_ANIMATION_BLUE:resId = R.drawable.blue;break;
-            case BEAD_ANIMATION_GREEN:resId = R.drawable.green;break;
-            case BEAD_ANIMATION_YELLOW:resId = R.drawable.yellow;break;
-            case BEAD_ANIMATION_PURPLE:resId = R.drawable.purple;break;
             default:resId = R.drawable.bead1;break;
         }
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resId);
@@ -67,14 +59,9 @@ public class BeadUtil {
     }
 
     //随机的属性珠子
-    public static int getRandomType() {
-        int roll = RNG.nextInt(BEAD_TOTAL);
-        return roll;
+    static int getRandomType() {
+        return RNG.nextInt(BEAD_TOTAL);
     }
 
-    //获取珠子的动画bitmap编号
-    public static int getBeadAnimationType(int type){
-        return type + BEAD_TOTAL;
-    }
 
 }

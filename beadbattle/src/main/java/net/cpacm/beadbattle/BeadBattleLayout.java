@@ -26,7 +26,7 @@ public class BeadBattleLayout extends ViewGroup {
 
     private final static int APPEAR_SEQUENT_DURATION = 50;
     private final static int APPEAR_TOGETHER_DURATION = 300;
-    private final static int DISAPPEAR_TOGETHER_DURATION = 500;
+    private final static int DISAPPEAR_TOGETHER_DURATION = 300;
     private final static int DISAPPEAR_SEQUENT_DURATION = 200;
     private final static int DROP_TOGETHER_DURATION = 200;
 
@@ -45,6 +45,8 @@ public class BeadBattleLayout extends ViewGroup {
     private SparseArray<BeadView> beadViewArray;
     private int beadSquare = 100;
     private boolean canTouch = true;
+
+    private OnBeadScoreListener onBeadScoreListener;
 
     public BeadBattleLayout(Context context) {
         this(context, null);
@@ -280,6 +282,9 @@ public class BeadBattleLayout extends ViewGroup {
                 super.onAnimationEnd(animation);
                 appearAnimationList.clear();
                 canTouch = true;
+                if (onBeadScoreListener != null) {
+                    onBeadScoreListener.onBeadScore(selectedAnimationList.size());
+                }
             }
         });
         appearAnimation.start();
@@ -371,5 +376,17 @@ public class BeadBattleLayout extends ViewGroup {
     @Override
     protected LayoutParams generateDefaultLayoutParams() {
         return new LayoutParams(beadSquare, beadSquare);
+    }
+
+    public interface OnBeadScoreListener {
+        void onBeadScore(int count);
+    }
+
+    public OnBeadScoreListener getOnBeadScoreListener() {
+        return onBeadScoreListener;
+    }
+
+    public void setOnBeadScoreListener(OnBeadScoreListener onBeadScoreListener) {
+        this.onBeadScoreListener = onBeadScoreListener;
     }
 }
